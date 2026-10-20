@@ -1,0 +1,955 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Naves Aero · Portal Social Media</title>
+<link rel="icon" href="assets/icone.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+  try { var t = localStorage.getItem('naves-tema'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+</script>
+<style>
+:root, :root[data-theme="dark"] {
+  --bg: #0A0E13;
+  --surface: #121821;
+  --surface-2: #19212C;
+  --surface-3: #212A36;
+  --line: #27313E;
+  --line-strong: #364252;
+  --text: #F3F1ED;
+  --muted: #9AA4B1;
+  --faint: #6B7684;
+  --accent: #F07E3D;
+  --accent-strong: #FF8C47;
+  --accent-soft: rgba(240,126,61,.13);
+  --accent-ink: #1A0E06;
+  --gold: #D2AE55;
+  --shadow: 0 1px 0 rgba(255,255,255,.03) inset, 0 12px 32px rgba(0,0,0,.35);
+  --st-aguardando: #8D97A5;
+  --st-ajustes: #E9A92A;
+  --st-aprovado: #35B57A;
+  --st-agendado: #5B9BFF;
+  --st-reprovado: #EF5A5F;
+  --media-bg: #05070A;
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  --bg: #F4F2EE;
+  --surface: #FFFFFF;
+  --surface-2: #F8F6F2;
+  --surface-3: #EFECE6;
+  --line: #E5E0D7;
+  --line-strong: #D3CCC0;
+  --text: #12161B;
+  --muted: #5D6672;
+  --faint: #8C949E;
+  --accent: #E06A27;
+  --accent-strong: #C95A1B;
+  --accent-soft: rgba(224,106,39,.10);
+  --accent-ink: #FFFFFF;
+  --gold: #A9832A;
+  --shadow: 0 1px 2px rgba(20,20,20,.04), 0 10px 30px rgba(20,20,20,.06);
+  --st-aguardando: #7C8592;
+  --st-ajustes: #C98A0C;
+  --st-aprovado: #1E9A62;
+  --st-agendado: #2F76E0;
+  --st-reprovado: #D9393F;
+  --media-bg: #111418;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased;
+}
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: inherit; }
+img { display: block; max-width: 100%; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- layout ---------- */
+.app { display: grid; grid-template-columns: 264px minmax(0, 1fr); min-height: 100vh; }
+.app > * { min-width: 0; }
+html, body { overflow-x: hidden; }
+.side {
+  position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column;
+  border-right: 1px solid var(--line); background: var(--surface); padding: 22px 16px 16px;
+}
+.brand { display: flex; flex-direction: column; gap: 6px; padding: 0 8px 20px; border-bottom: 1px solid var(--line); }
+.brand img { height: 40px; width: auto; object-fit: contain; object-position: left; }
+.brand small { color: var(--muted); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; }
+.logo-light { display: none !important; }
+:root[data-theme="light"] .logo-light { display: block !important; }
+:root[data-theme="light"] .logo-dark { display: none !important; }
+.nav { flex: 1; overflow-y: auto; padding-top: 14px; }
+.nav-group { margin-bottom: 14px; }
+.nav-label { font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--faint); font-weight: 700; padding: 6px 10px; }
+.nav a {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 9px 10px; border-radius: 10px; text-decoration: none; color: var(--muted); font-weight: 600; font-size: 14px;
+}
+.nav a:hover { background: var(--surface-2); color: var(--text); }
+.nav a.on { background: var(--accent-soft); color: var(--accent); }
+.nav a .count { font-size: 11px; font-weight: 700; color: var(--faint); background: var(--surface-2); padding: 1px 7px; border-radius: 99px; }
+.nav a.on .count { color: var(--accent); background: transparent; }
+.side-foot { border-top: 1px solid var(--line); padding-top: 14px; display: grid; gap: 12px; }
+.row-between { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.lbl { font-size: 12px; font-weight: 700; color: var(--muted); }
+.month { display: flex; align-items: center; gap: 6px; }
+.month b { font-size: 12.5px; min-width: 96px; text-align: center; }
+.icon-btn {
+  width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface-2);
+  display: inline-grid; place-items: center; font-size: 14px; line-height: 1; padding: 0;
+}
+.icon-btn:hover { border-color: var(--line-strong); }
+.switch { width: 40px; height: 22px; border-radius: 99px; border: 1px solid var(--line-strong); background: var(--surface-3); position: relative; padding: 0; }
+.switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--muted); transition: transform .2s; }
+.switch[aria-checked="true"] { background: var(--accent); border-color: var(--accent); }
+.switch[aria-checked="true"]::after { transform: translateX(18px); background: #fff; }
+.agency { font-size: 11.5px; color: var(--faint); font-weight: 600; }
+.main { padding: 32px clamp(16px, 4vw, 48px) 80px; max-width: 1240px; width: 100%; }
+
+.demo-banner {
+  background: var(--accent-soft); color: var(--text); border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  border-radius: 12px; padding: 10px 14px; font-size: 13px; margin-bottom: 18px;
+}
+.demo-banner b { color: var(--accent); }
+
+/* ---------- cards / hero ---------- */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow); }
+.hero { padding: 30px 32px; margin-bottom: 22px; position: relative; overflow: hidden; }
+.hero::before {
+  content: ''; position: absolute; inset: 0 0 auto auto; width: 280px; height: 280px; transform: translate(35%, -45%);
+  background: radial-gradient(circle, var(--accent-soft), transparent 70%); pointer-events: none;
+}
+.eyebrow { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin: 0 0 10px; }
+h1 { font-size: clamp(26px, 3.4vw, 36px); line-height: 1.12; margin: 0 0 10px; font-weight: 800; letter-spacing: -.02em; }
+h2 { font-size: 19px; margin: 0; font-weight: 800; letter-spacing: -.01em; }
+.lead { color: var(--muted); margin: 0; max-width: 720px; }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 22px; }
+.step { border: 1px solid var(--line); background: var(--surface-2); border-radius: 14px; padding: 14px 16px; }
+.step b { display: block; font-size: 14px; margin-bottom: 2px; }
+.step b span { color: var(--accent); margin-right: 4px; }
+.step p { margin: 0; color: var(--muted); font-size: 13px; }
+.home-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.home-card { text-decoration: none; overflow: hidden; display: flex; flex-direction: column; transition: transform .15s, border-color .15s; }
+.home-card:hover { transform: translateY(-2px); border-color: var(--line-strong); }
+.home-card .art { height: 150px; background: var(--surface-2); border-bottom: 1px solid var(--line); display: grid; place-items: center; }
+.home-card .art svg { width: 150px; height: 110px; }
+.home-card .body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.home-card p { margin: 0; color: var(--muted); font-size: 13.5px; flex: 1; }
+.home-card .go { font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 800; margin-top: 8px; }
+
+/* ---------- calendar ---------- */
+.cal { padding: 24px; }
+.cal-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+.stats { display: flex; gap: 22px; flex-wrap: wrap; }
+.stat b { display: block; font-size: 24px; line-height: 1; font-weight: 800; }
+.stat span { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; margin: 0 0 14px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); font-weight: 600; }
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; background: var(--st-aguardando); }
+.grid7 { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
+.wd { text-align: center; font-size: 11px; font-weight: 800; letter-spacing: .12em; color: var(--accent); padding-bottom: 4px; }
+.day {
+  position: relative; aspect-ratio: 1 / 1.08; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line);
+  overflow: hidden; padding: 0; text-align: left;
+}
+.day.empty { visibility: hidden; }
+.day .num { position: absolute; top: 7px; right: 9px; font-size: 13px; font-weight: 800; color: var(--muted); z-index: 2; }
+.day.today { border-color: var(--accent); }
+.day.has { background: var(--surface-3); border-color: var(--line-strong); }
+.day.img .num { color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
+.day.has .num { color: var(--text); }
+.day .bg { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.day .bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,0) 45%, rgba(0,0,0,.55)); }
+.day .ph { position: absolute; inset: 0; padding: 30px 8px 24px; font-size: 11px; line-height: 1.3; font-weight: 600; color: var(--muted); overflow: hidden; }
+.day.has .ph { background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 22%, var(--surface-3)), var(--surface-3)); color: var(--text); }
+.day .fmt { position: absolute; top: 7px; left: 7px; z-index: 2; }
+.day .foot { position: absolute; left: 8px; bottom: 7px; right: 8px; display: flex; align-items: center; gap: 5px; z-index: 2; }
+.day .more { font-size: 10.5px; font-weight: 800; color: #fff; background: rgba(0,0,0,.55); border-radius: 99px; padding: 1px 6px; margin-left: auto; }
+.day:not(.empty):hover { border-color: var(--accent); }
+
+.tag {
+  display: inline-flex; align-items: center; gap: 4px; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; font-weight: 800;
+  padding: 3px 8px; border-radius: 99px; background: rgba(0,0,0,.6); color: #fff; white-space: nowrap;
+}
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700;
+  padding: 4px 10px; border-radius: 99px; border: 1px solid var(--line-strong); color: var(--muted); background: transparent;
+}
+.chip.accent { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+.chip.gold { color: var(--gold); border-color: color-mix(in srgb, var(--gold) 45%, transparent); letter-spacing: .04em; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* ---------- tabs / filters ---------- */
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.tab {
+  border: 1px solid var(--line-strong); background: var(--surface); border-radius: 99px; padding: 8px 16px; font-weight: 700; font-size: 14px; color: var(--muted);
+}
+.tab small { font-size: 11.5px; margin-left: 6px; color: var(--faint); }
+.tab.on { background: var(--text); color: var(--bg); border-color: var(--text); }
+.tab.on small { color: inherit; opacity: .7; }
+.filters { display: flex; gap: 6px; flex-wrap: wrap; margin: 14px 0 16px; }
+.filter { border: 1px solid var(--line); background: var(--surface-2); border-radius: 99px; padding: 5px 12px; font-size: 12.5px; font-weight: 700; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
+.filter.on { background: var(--text); color: var(--bg); border-color: var(--text); }
+.progress { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--muted); }
+.progress b { color: var(--text); }
+.bar { flex: 1; height: 6px; background: var(--surface-3); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.bar i { display: block; height: 100%; background: var(--st-aprovado); border-radius: 99px; transition: width .3s; }
+.section { padding: 24px; }
+.section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line-strong); background: var(--surface-2); border-radius: 10px;
+  padding: 8px 14px; font-weight: 700; font-size: 13px; text-decoration: none; color: var(--text);
+}
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.primary:hover { background: var(--accent-strong); }
+.btn:disabled { opacity: .5; cursor: default; }
+.btn.sm { padding: 5px 10px; font-size: 12px; border-radius: 8px; }
+
+/* ---------- pauta accordion ---------- */
+.pautas { display: grid; gap: 10px; }
+.pauta { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); overflow: hidden; }
+.pauta.open { border-color: var(--line-strong); }
+.pauta-head { width: 100%; display: grid; grid-template-columns: 64px 1fr auto auto; align-items: center; gap: 14px; padding: 14px 16px; background: none; border: 0; text-align: left; }
+.pauta-head:hover { background: var(--surface-2); }
+.date-badge { text-align: center; }
+.date-badge b { display: block; font-size: 18px; font-weight: 800; line-height: 1.1; }
+.date-badge span { font-size: 10.5px; letter-spacing: .14em; color: var(--muted); font-weight: 800; }
+.pauta-head .t { font-weight: 700; font-size: 15px; line-height: 1.35; margin-bottom: 6px; }
+.st-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+.caret { color: var(--faint); transition: transform .2s; }
+.pauta.open .caret { transform: rotate(180deg); }
+.pauta-body { border-top: 1px solid var(--line); padding: 18px; display: grid; gap: 16px; background: var(--surface-2); }
+
+/* ---------- fields ---------- */
+.field { display: grid; gap: 7px; }
+.field-label { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); font-weight: 800; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.field-label em { font-style: normal; letter-spacing: 0; text-transform: none; color: var(--faint); font-weight: 600; font-size: 11.5px; }
+.readbox { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; white-space: pre-wrap; color: var(--text); font-size: 14px; }
+textarea {
+  width: 100%; resize: vertical; min-height: 84px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  padding: 12px 14px; font-size: 14px; line-height: 1.55;
+}
+textarea:focus { outline: none; border-color: var(--accent); }
+.field-actions { display: flex; justify-content: flex-end; align-items: center; gap: 10px; font-size: 12px; color: var(--faint); }
+.saved { color: var(--st-aprovado); font-weight: 700; }
+.status-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.st-btn {
+  display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line-strong); background: var(--surface); border-radius: 99px;
+  padding: 7px 13px; font-size: 13px; font-weight: 700; color: var(--muted);
+}
+.st-btn:hover { color: var(--text); }
+.st-btn.on { color: var(--text); border-color: var(--c); background: color-mix(in srgb, var(--c) 16%, var(--surface)); }
+.st-btn .dot { background: var(--c); }
+
+/* ---------- comments ---------- */
+.comments { display: grid; gap: 8px; }
+.comment { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; }
+.comment .meta { font-size: 11.5px; color: var(--faint); font-weight: 600; margin-bottom: 2px; }
+.comment .meta b { color: var(--text); }
+.comment p { margin: 0; white-space: pre-wrap; }
+.no-comments { font-size: 13px; color: var(--faint); }
+.comment-form { display: grid; gap: 8px; }
+.comment-form input { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; font-size: 13.5px; }
+.comment-form input:focus { outline: none; border-color: var(--accent); }
+.comment-form textarea { min-height: 64px; }
+
+/* ---------- board ---------- */
+.board { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; align-items: start; }
+.col { background: var(--surface-2); border: 1px solid var(--line); border-radius: 16px; padding: 12px; display: grid; gap: 10px; }
+.col-head { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 13px; padding: 2px 4px; }
+.col-head .n { margin-left: auto; color: var(--faint); font-size: 12px; }
+.empty-col { text-align: center; color: var(--faint); font-size: 12.5px; padding: 14px 0; font-weight: 600; }
+.pcard { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; text-align: left; padding: 0; width: 100%; transition: border-color .15s, transform .15s; }
+.pcard:hover { border-color: var(--accent); transform: translateY(-1px); }
+.pcard .thumb { position: relative; aspect-ratio: 4 / 5; background: var(--media-bg); background-size: cover; background-position: center; }
+.pcard.story .thumb, .pcard.video .thumb { aspect-ratio: 9 / 14; }
+.pcard .thumb .tag { position: absolute; top: 9px; left: 9px; }
+.pcard .thumb .cnt { position: absolute; right: 9px; bottom: 9px; }
+.pcard .thumb .play { position: absolute; inset: 0; display: grid; place-items: center; }
+.pcard .thumb .play i { width: 46px; height: 46px; border-radius: 50%; background: rgba(0,0,0,.55); display: grid; place-items: center; color: #fff; font-style: normal; font-size: 16px; padding-left: 3px; }
+.pcard .noart { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 14px; color: var(--muted); font-size: 12.5px; font-weight: 600;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 16%, var(--surface-3)), var(--surface-3)); }
+.pcard .noart b { display: block; color: var(--text); font-size: 13px; margin-bottom: 4px; }
+.pcard .info { padding: 11px 12px 12px; display: grid; gap: 4px; }
+.pcard .info .t { font-weight: 700; font-size: 14px; line-height: 1.35; }
+.pcard .info .d { font-size: 11.5px; color: var(--accent); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.pcard .info .c { font-size: 12px; color: var(--muted); font-style: italic; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* ---------- modal ---------- */
+.modal { position: fixed; inset: 0; z-index: 50; display: none; background: rgba(4,6,9,.72); backdrop-filter: blur(4px); padding: 24px; overflow-y: auto; }
+.modal.open { display: block; }
+.sheet { max-width: 1020px; margin: 0 auto; background: var(--surface); border: 1px solid var(--line); border-radius: 22px; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: min(720px, calc(100vh - 48px)); }
+.sheet.single { grid-template-columns: 1fr; max-width: 720px; }
+.media { background: var(--media-bg); position: relative; display: flex; align-items: center; justify-content: center; min-height: 360px; }
+.media img { max-height: calc(100vh - 120px); width: 100%; object-fit: contain; }
+.media iframe { width: 100%; height: 100%; min-height: 560px; border: 0; }
+.media .noart { color: #aab3bf; text-align: center; padding: 30px; font-size: 14px; max-width: 320px; }
+.media .noart b { display: block; color: #fff; font-size: 16px; margin-bottom: 6px; }
+.media .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(255,255,255,.9); color: #111; font-size: 20px; display: grid; place-items: center; }
+.media .prev { left: 12px; } .media .next { right: 12px; }
+.media .counter { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); }
+.detail { padding: 24px 26px 28px; display: grid; gap: 18px; align-content: start; max-height: calc(100vh - 48px); overflow-y: auto; }
+.detail-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.detail-head .d { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-weight: 800; margin-bottom: 4px; }
+.detail-head h2 { font-size: 22px; line-height: 1.25; }
+.close { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line-strong); background: var(--surface-2); font-size: 18px; flex: none; display: grid; place-items: center; }
+.day-switch { display: flex; gap: 6px; flex-wrap: wrap; }
+.downloads { display: flex; gap: 8px; flex-wrap: wrap; }
+.divider { height: 1px; background: var(--line); }
+
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translate(-50%, 30px); opacity: 0; background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-weight: 700; font-size: 13px; z-index: 80; transition: all .25s; pointer-events: none; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.empty-state { text-align: center; color: var(--muted); padding: 40px 20px; }
+
+#print { display: none; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 960px) {
+  .app { grid-template-columns: 1fr; }
+  .side { position: sticky; top: 0; z-index: 30; height: auto; flex-direction: column; padding: 12px 16px 0; border-right: 0; border-bottom: 1px solid var(--line); }
+  .brand { flex-direction: row; align-items: center; justify-content: space-between; padding: 0 0 10px; border-bottom: 0; }
+  .brand img { height: 26px; }
+  .brand small { display: none; }
+  .nav { display: flex; overflow-x: auto; padding: 0 0 10px; gap: 4px; scrollbar-width: none; }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-group { display: contents; }
+  .nav-label { display: none; }
+  .nav a { white-space: nowrap; padding: 7px 12px; font-size: 13.5px; }
+  .side-foot { grid-template-columns: 1fr auto; padding: 8px 0 10px; }
+  .side-foot .agency, .side-foot .lbl-month { display: none; }
+  .main { padding-top: 18px; }
+  .steps, .home-cards { grid-template-columns: 1fr; }
+  .sheet { grid-template-columns: 1fr; min-height: 0; }
+  .detail { max-height: none; }
+  .media iframe { min-height: 70vh; }
+}
+@media (max-width: 600px) {
+  .hero, .cal, .section { padding: 20px 16px; }
+  .grid7 { gap: 4px; }
+  .day { border-radius: 9px; aspect-ratio: 1 / 1.25; }
+  .day .num { font-size: 11px; top: 4px; right: 5px; }
+  .day .fmt, .day .ph { display: none; }
+  .day .foot { left: 4px; bottom: 4px; }
+  .day .more { font-size: 9px; padding: 0 4px; }
+  .wd { font-size: 9.5px; letter-spacing: .04em; }
+  .stats { gap: 14px; }
+  .stat b { font-size: 20px; }
+  .modal { padding: 0; }
+  .sheet { border-radius: 0; border: 0; min-height: 100vh; }
+  .pauta-head { grid-template-columns: 52px 1fr auto; gap: 10px; padding: 12px; }
+  .pauta-head .st-pill { display: none; }
+  .pauta-body { padding: 14px 12px; }
+}
+
+@media print {
+  body { background: #fff; color: #111; font-family: 'Montserrat', Arial, sans-serif; }
+  .app, .modal, .toast { display: none !important; }
+  #print { display: block; padding: 0 8px; }
+  #print h1 { font-size: 22px; margin: 0 0 4px; }
+  #print .sub { color: #666; font-size: 12px; margin-bottom: 20px; }
+  #print .item { border-top: 2px solid #F07E3D; padding: 12px 0 16px; break-inside: avoid; }
+  #print .item h3 { margin: 0 0 4px; font-size: 15px; }
+  #print .item .meta { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 8px; }
+  #print .item h4 { margin: 10px 0 2px; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #C95A1B; }
+  #print .item p { margin: 0; white-space: pre-wrap; font-size: 12.5px; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand">
+      <a href="#/home" aria-label="Início">
+        <img class="logo-dark" src="assets/logo-escuro.png" alt="Naves Aero">
+        <img class="logo-light" src="assets/logo-claro.png" alt="Naves Aero">
+      </a>
+      <small id="subtitle">Portal Social Media</small>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="side-foot">
+      <div class="row-between">
+        <span class="lbl lbl-month">Mês</span>
+        <div class="month">
+          <button class="icon-btn" data-action="month" data-dir="-1" aria-label="Mês anterior">‹</button>
+          <b id="monthLabel"></b>
+          <button class="icon-btn" data-action="month" data-dir="1" aria-label="Próximo mês">›</button>
+        </div>
+      </div>
+      <div class="row-between">
+        <span class="lbl">Tema escuro</span>
+        <button class="switch" id="themeSwitch" role="switch" aria-checked="true" data-action="theme" aria-label="Tema escuro"></button>
+      </div>
+      <div class="agency" id="agency"></div>
+    </div>
+  </aside>
+  <main class="main" id="view"></main>
+</div>
+
+<div class="modal" id="modal" aria-hidden="true"><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast"></div>
+<div id="print"></div>
+
+<script src="config.js"></script>
+<script src="conteudo.js"></script>
+<script>
+(function () {
+'use strict';
+
+const C = window.PORTAL_CONFIG || {};
+const POSTS = (window.PORTAL_POSTS || []).slice().sort((a, b) => (a.data + a.id).localeCompare(b.data + b.id));
+const SLUG = C.slug || 'naves-aero';
+const DEMO = !(C.supabaseUrl && C.supabaseKey);
+const LS_KEY = 'naves-portal-' + SLUG;
+
+const STATUS = [
+  { k: 'aguardando', l: 'Aguardando', c: 'var(--st-aguardando)' },
+  { k: 'ajustes', l: 'Em ajustes', c: 'var(--st-ajustes)' },
+  { k: 'aprovado', l: 'Aprovado', c: 'var(--st-aprovado)' },
+  { k: 'agendado', l: 'Agendado', c: 'var(--st-agendado)' },
+  { k: 'reprovado', l: 'Não aprovado', c: 'var(--st-reprovado)' }
+];
+const ST = Object.fromEntries(STATUS.map(s => [s.k, s]));
+const CATS = [
+  { k: 'criativos', l: 'Criativos', route: 'criativos' },
+  { k: 'videos', l: 'Vídeos', route: 'videos' },
+  { k: 'stories', l: 'Stories', route: 'stories' }
+];
+const WD = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
+const WD_LONG = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'];
+const MONTHS = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+
+/* ---------------- helpers ---------------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const lsGet = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : v; } catch (e) { return d; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+function parseDate(s) { const [y, m, d] = s.split('-').map(Number); return { y, m: m - 1, d, wd: new Date(y, m - 1, d).getDay() }; }
+const ddmm = s => { const p = parseDate(s); return String(p.d).padStart(2, '0') + '/' + String(p.m + 1).padStart(2, '0'); };
+const fullDate = s => { const p = parseDate(s); return ddmm(s) + '/' + p.y + ' · ' + WD_LONG[p.wd]; };
+function catOf(p) {
+  const f = (p.formato || '').toLowerCase();
+  if (f.includes('story')) return 'stories';
+  if (f.includes('reel') || f.includes('vídeo') || f.includes('video')) return 'videos';
+  return 'criativos';
+}
+function filesOf(p) {
+  const isVid = catOf(p) === 'videos';
+  return (p.arquivos || []).filter(Boolean).map(a => typeof a === 'string' ? { id: a, tipo: isVid ? 'video' : 'imagem' } : a);
+}
+const imgUrl = (id, w) => 'https://lh3.googleusercontent.com/d/' + id + '=w' + (w || 1200);
+const vidThumb = id => 'https://drive.google.com/thumbnail?id=' + id + '&sz=w800';
+const vidEmbed = id => 'https://drive.google.com/file/d/' + id + '/preview';
+const dlUrl = id => 'https://drive.google.com/uc?export=download&id=' + id;
+const thumbOf = f => f.tipo === 'video' ? vidThumb(f.id) : imgUrl(f.id, 600);
+
+/* ---------------- state ---------------- */
+const state = { status: {}, comments: {}, fields: {} };
+const ui = { route: 'home', cat: 'criativos', ppFilter: 'todas', open: {}, slide: 0, modalPost: null, modalPosts: null };
+
+function pickInitialMonth() {
+  const now = new Date();
+  const ym = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+  if (POSTS.some(p => p.data.startsWith(ym)) || !POSTS.length) return { y: now.getFullYear(), m: now.getMonth() };
+  const last = parseDate(POSTS[POSTS.length - 1].data);
+  return { y: last.y, m: last.m };
+}
+ui.month = pickInitialMonth();
+const monthPrefix = () => ui.month.y + '-' + String(ui.month.m + 1).padStart(2, '0');
+const postsOfMonth = () => POSTS.filter(p => p.data.startsWith(monthPrefix()));
+const postById = id => POSTS.find(p => p.id === id);
+
+const getField = (p, name) => (state.fields[p.id] && name in state.fields[p.id]) ? state.fields[p.id][name] : (p[name] || '');
+const stCriativo = p => state.status[p.id] || 'aguardando';
+const stPauta = p => state.status['pp-' + p.id] || p.statusPauta || 'aguardando';
+const pautaAvaliada = p => stPauta(p) !== 'aguardando';
+
+/* ---------------- storage (Supabase ou local) ---------------- */
+const HEADERS = { apikey: C.supabaseKey, Authorization: 'Bearer ' + C.supabaseKey, 'Content-Type': 'application/json' };
+function localLoad() {
+  try { const d = JSON.parse(lsGet(LS_KEY, '{}')); state.status = d.status || {}; state.comments = d.comments || {}; state.fields = d.fields || {}; } catch (e) {}
+}
+function localSave() { lsSet(LS_KEY, JSON.stringify(state)); }
+
+async function loadAll() {
+  if (DEMO) { localLoad(); return; }
+  const q = '?client_slug=eq.' + encodeURIComponent(SLUG);
+  const get = path => fetch(C.supabaseUrl + '/rest/v1/' + path, { headers: HEADERS }).then(r => r.ok ? r.json() : Promise.reject(r.status));
+  try {
+    const [st, cm, fl] = await Promise.all([
+      get('post_status' + q + '&select=post_key,status'),
+      get('post_comments' + q + '&select=post_key,comment_text,created_at&order=created_at.asc'),
+      get('post_fields' + q + '&select=post_key,field_name,field_value')
+    ]);
+    const s = {}, c = {}, f = {};
+    st.forEach(r => { s[r.post_key] = r.status; });
+    cm.forEach(r => { (c[r.post_key] = c[r.post_key] || []).push(parseComment(r.comment_text, r.created_at)); });
+    fl.forEach(r => { (f[r.post_key] = f[r.post_key] || {})[r.field_name] = r.field_value; });
+    state.status = s; state.comments = c; state.fields = f;
+  } catch (e) {
+    toast('Não consegui carregar os dados salvos. Verifique a conexão.');
+  }
+}
+function parseComment(text, ts) {
+  const i = text.indexOf('::');
+  const autor = i > 0 && i < 60 ? text.slice(0, i) : '';
+  return { autor, texto: i > 0 && i < 60 ? text.slice(i + 2) : text, ts };
+}
+async function remote(table, body, upsert) {
+  const h = Object.assign({}, HEADERS, upsert ? { Prefer: 'resolution=merge-duplicates,return=minimal' } : { Prefer: 'return=minimal' });
+  const r = await fetch(C.supabaseUrl + '/rest/v1/' + table, { method: 'POST', headers: h, body: JSON.stringify(body) });
+  if (!r.ok) throw new Error(r.status);
+}
+async function saveStatus(key, val) {
+  state.status[key] = val;
+  if (DEMO) return localSave();
+  try { await remote('post_status', { client_slug: SLUG, post_key: key, status: val, updated_at: new Date().toISOString() }, true); }
+  catch (e) { toast('Não foi possível salvar o status. Tente de novo.'); }
+}
+async function saveField(id, name, val) {
+  (state.fields[id] = state.fields[id] || {})[name] = val;
+  if (DEMO) { localSave(); return true; }
+  try { await remote('post_fields', { client_slug: SLUG, post_key: id, field_name: name, field_value: val, updated_at: new Date().toISOString() }, true); return true; }
+  catch (e) { toast('Não foi possível salvar o texto. Tente de novo.'); return false; }
+}
+async function addComment(key, autor, texto) {
+  const c = { autor, texto, ts: new Date().toISOString() };
+  (state.comments[key] = state.comments[key] || []).push(c);
+  if (DEMO) return localSave();
+  try { await remote('post_comments', { client_slug: SLUG, post_key: key, comment_text: (autor ? autor.replace(/::/g, ':') + '::' : '') + texto }); }
+  catch (e) { toast('Não foi possível enviar o comentário. Tente de novo.'); }
+}
+
+/* ---------------- UI bits ---------------- */
+let toastT;
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2600); }
+const dot = k => '<i class="dot" style="background:' + ST[k].c + '"></i>';
+const stPill = k => '<span class="st-pill">' + dot(k) + esc(ST[k].l) + '</span>';
+function chipsFor(p) {
+  return '<div class="chips"><span class="chip accent">' + esc(p.formato || 'Post') + '</span>' +
+    (p.editoria ? '<span class="chip gold">' + esc(p.editoria) + '</span>' : '') +
+    (p.redes || []).map(r => '<span class="chip">' + esc(r) + '</span>').join('') + '</div>';
+}
+function statusButtons(key, current) {
+  return '<div class="status-row">' + STATUS.map(s =>
+    '<button class="st-btn' + (current === s.k ? ' on' : '') + '" style="--c:' + s.c + '" data-action="status" data-key="' + esc(key) + '" data-val="' + s.k + '">' +
+    '<i class="dot"></i>' + esc(s.l) + '</button>').join('') + '</div>';
+}
+function fieldBox(p, name, label, opts) {
+  opts = opts || {};
+  const val = getField(p, name);
+  if (opts.readonly) {
+    if (!val) return '';
+    return '<div class="field"><div class="field-label">' + esc(label) + '</div><div class="readbox">' + esc(val) + '</div></div>';
+  }
+  const rows = Math.min(14, Math.max(opts.rows || 3, val.split('\n').length + 1));
+  return '<div class="field" data-fieldwrap>' +
+    '<div class="field-label">' + esc(label) + (opts.count ? '<em data-count>' + val.length + ' caracteres</em>' : '<em>editável</em>') + '</div>' +
+    '<textarea rows="' + rows + '" data-field="' + name + '" data-id="' + esc(p.id) + '" placeholder="' + esc(opts.placeholder || 'Sem texto ainda') + '">' + esc(val) + '</textarea>' +
+    '<div class="field-actions"><span class="saved" data-saved>Salvo ✓</span><button class="btn sm" data-action="save-field" disabled>Salvar</button></div>' +
+    '</div>';
+}
+function commentsBlock(key) {
+  const list = state.comments[key] || [];
+  const nome = lsGet('naves-nome', '');
+  return '<div class="field"><div class="field-label">Comentários <em>' + list.length + '</em></div>' +
+    '<div class="comments">' + (list.length ? list.map(c => {
+      const d = c.ts ? new Date(c.ts).toLocaleDateString('pt-BR') : '';
+      return '<div class="comment"><div class="meta">' + (c.autor ? '<b>' + esc(c.autor) + '</b> · ' : '') + esc(d) + '</div><p>' + esc(c.texto) + '</p></div>';
+    }).join('') : '<div class="no-comments">Nenhum comentário ainda.</div>') + '</div>' +
+    '<div class="comment-form" data-cform="' + esc(key) + '">' +
+    '<input type="text" data-cname placeholder="Seu nome" value="' + esc(nome) + '" maxlength="40">' +
+    '<textarea data-ctext rows="2" placeholder="Escreva um comentário ou pedido de ajuste"></textarea>' +
+    '<div class="field-actions"><span data-ccount>0 caracteres</span><button class="btn primary sm" data-action="comment">Enviar</button></div>' +
+    '</div></div>';
+}
+function icon(name) {
+  const a = 'var(--accent)', s = 'var(--line-strong)', f = 'var(--surface)';
+  if (name === 'cal') return '<svg viewBox="0 0 150 110"><rect x="20" y="10" width="110" height="90" rx="12" fill="' + f + '" stroke="' + a + '" stroke-width="5"/><path d="M20 22a12 12 0 0 1 12-12h86a12 12 0 0 1 12 12v12H20z" fill="' + a + '"/>' +
+    [0, 1, 2, 3].map(i => [0, 1].map(j => '<rect x="' + (32 + i * 23) + '" y="' + (46 + j * 22) + '" width="17" height="14" rx="3" fill="' + ((i === 2 && j === 0) ? a : s) + '"/>').join('')).join('') +
+    '<circle cx="118" cy="90" r="15" fill="' + f + '" stroke="' + a + '" stroke-width="5"/><path d="M111 90l5 5 9-10" fill="none" stroke="' + a + '" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  if (name === 'pauta') return '<svg viewBox="0 0 150 110"><rect x="35" y="8" width="72" height="94" rx="10" fill="' + f + '" stroke="' + a + '" stroke-width="5"/><rect x="48" y="24" width="40" height="7" rx="3" fill="' + a + '"/>' +
+    [40, 52, 64].map(y => '<rect x="48" y="' + y + '" width="46" height="5" rx="2.5" fill="' + s + '"/>').join('') + '<rect x="48" y="78" width="22" height="9" rx="3" fill="' + s + '"/>' +
+    '<path d="M98 82l26-44 9 5-26 44-12 6z" fill="' + a + '"/></svg>';
+  return '<svg viewBox="0 0 150 110">' + [0, 1, 2].map(i => '<rect x="' + (20 + i * 39) + '" y="12" width="32" height="86" rx="7" fill="' + f + '" stroke="' + a + '" stroke-width="4.5"/>' +
+    '<rect x="' + (27 + i * 39) + '" y="' + (22 + i * 14) + '" width="18" height="16" rx="3" fill="' + (i === 2 ? a : s) + '"/><rect x="' + (27 + i * 39) + '" y="' + (44 + i * 6) + '" width="18" height="16" rx="3" fill="' + (i ? a : s) + '"/>').join('') + '</svg>';
+}
+
+/* ---------------- nav ---------------- */
+function renderNav() {
+  const mp = postsOfMonth();
+  const n = k => mp.filter(p => catOf(p) === k).length;
+  const ppPend = mp.filter(p => !pautaAvaliada(p)).length;
+  const link = (r, l, c) => '<a href="#/' + r + '" class="' + (ui.route === r ? 'on' : '') + '">' + esc(l) + (c ? '<span class="count">' + c + '</span>' : '') + '</a>';
+  $('#nav').innerHTML =
+    '<div class="nav-group"><div class="nav-label">Navegação</div>' + link('home', 'Home') + link('calendario', 'Calendário') + '</div>' +
+    '<div class="nav-group"><div class="nav-label">Planejamento</div>' + link('pauta', 'Pré-pauta / Copy', ppPend) + '</div>' +
+    '<div class="nav-group"><div class="nav-label">Acompanhamento</div>' + CATS.map(c => link(c.route, c.l, n(c.k))).join('') + '</div>';
+  $('#monthLabel').textContent = MONTHS[ui.month.m] + ' ' + ui.month.y;
+}
+
+/* ---------------- views ---------------- */
+function hero(title, text) {
+  return '<section class="card hero"><p class="eyebrow">' + esc(C.cliente || 'Naves Aero') + ' · ' + esc(C.subtitulo || 'Portal Social Media') + '</p>' +
+    '<h1>' + esc(title) + '</h1><p class="lead">' + text + '</p></section>';
+}
+function demoBanner() {
+  return DEMO ? '<div class="demo-banner"><b>Modo demonstração.</b> O banco de dados ainda não foi conectado: status, comentários e textos editados ficam salvos só neste navegador.</div>' : '';
+}
+
+function viewHome() {
+  const mp = postsOfMonth();
+  const ppPend = mp.filter(p => !pautaAvaliada(p)).length;
+  const crPend = mp.filter(p => filesOf(p).length && stCriativo(p) === 'aguardando').length;
+  const card = (href, ic, t, d, go) => '<a class="card home-card" href="#/' + href + '"><div class="art">' + icon(ic) + '</div><div class="body"><h2>' + t + '</h2><p>' + d + '</p><span class="go">' + go + ' →</span></div></a>';
+  return demoBanner() +
+    '<section class="card hero"><p class="eyebrow">' + esc(C.cliente) + ' · ' + esc(C.subtitulo) + '</p><h1>Bem-vindo ao seu portal</h1>' +
+    '<p class="lead">Aqui você acompanha tudo o que vai para as redes sociais da Naves Aero: vê o calendário do mês, valida as pautas e legendas antes da produção e aprova cada arte e vídeo até a publicação.</p>' +
+    '<div class="steps">' +
+    '<div class="step"><b><span>1.</span> Pré-pautas</b><p>Leia os temas, o briefing e a legenda do mês. Ajuste o texto e aprove ou peça mudança.</p></div>' +
+    '<div class="step"><b><span>2.</span> Produção</b><p>A equipe cria as artes e os vídeos a partir das pautas aprovadas.</p></div>' +
+    '<div class="step"><b><span>3.</span> Acompanhamento</b><p>Aprove cada criativo e acompanhe o status até a publicação.</p></div>' +
+    '</div></section>' +
+    '<div class="home-cards">' +
+    card('calendario', 'cal', 'Calendário', 'O mês inteiro em um só lugar, com a prévia de cada post por dia.', esc(MONTHS[ui.month.m] + ' ' + ui.month.y)) +
+    card('pauta', 'pauta', 'Pré-pautas e copy', 'Os temas do mês antes da produção: objetivo, briefing visual, copy e legenda.', ppPend + ' aguardando avaliação') +
+    card('criativos', 'board', 'Acompanhamento', 'As artes e os vídeos prontos, organizados por status.', crPend + ' aguardando aprovação') +
+    '</div>';
+}
+
+function viewCalendar() {
+  const mp = postsOfMonth();
+  const y = ui.month.y, m = ui.month.m;
+  const first = new Date(y, m, 1).getDay();
+  const days = new Date(y, m + 1, 0).getDate();
+  const today = new Date();
+  const isThisMonth = today.getFullYear() === y && today.getMonth() === m;
+  const count = k => mp.filter(p => stCriativo(p) === k).length;
+  let cells = WD.map(d => '<div class="wd">' + d + '</div>').join('');
+  for (let i = 0; i < first; i++) cells += '<div class="day empty"></div>';
+  for (let d = 1; d <= days; d++) {
+    const ds = y + '-' + String(m + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+    const dp = mp.filter(p => p.data === ds);
+    let cls = 'day' + (dp.length ? ' has' : '') + (isThisMonth && today.getDate() === d ? ' today' : '');
+    if (!dp.length) { cells += '<div class="' + cls + '"><span class="num">' + d + '</span></div>'; continue; }
+    const p = dp[0];
+    const f = filesOf(p)[0];
+    if (f) cls += ' img';
+    const st = f ? stCriativo(p) : stPauta(p);
+    cells += '<button class="' + cls + '" data-action="day" data-date="' + ds + '" aria-label="' + d + ': ' + esc(getField(p, 'tema')) + '">' +
+      (f ? '<span class="bg" style="background-image:url(\'' + thumbOf(f) + '\')"></span>' : '<span class="ph">' + esc(getField(p, 'tema')) + '</span>') +
+      '<span class="fmt tag">' + esc(p.formato || 'Post') + '</span><span class="num">' + d + '</span>' +
+      '<span class="foot">' + dp.map(x => dot(filesOf(x).length ? stCriativo(x) : stPauta(x))).join('') + (dp.length > 1 ? '<span class="more">+' + (dp.length - 1) + '</span>' : '') + '</span>' +
+      '</button>';
+  }
+  return demoBanner() + hero('Calendário', 'Toque em um dia para ver o post. Primeiro aparece a pauta (a ideia, o briefing e a legenda). Quando a arte fica pronta, a imagem aparece no dia e você aprova o criativo.') +
+    '<section class="card cal"><div class="cal-head"><h2>' + MONTHS[m] + ' ' + y + '</h2><div class="stats">' +
+    '<div class="stat"><b>' + mp.length + '</b><span>Previstos</span></div>' +
+    '<div class="stat"><b style="color:var(--st-aguardando)">' + count('aguardando') + '</b><span>Aguardando</span></div>' +
+    '<div class="stat"><b style="color:var(--st-ajustes)">' + count('ajustes') + '</b><span>Ajustes</span></div>' +
+    '<div class="stat"><b style="color:var(--st-aprovado)">' + count('aprovado') + '</b><span>Aprovados</span></div>' +
+    '<div class="stat"><b style="color:var(--st-agendado)">' + count('agendado') + '</b><span>Agendados</span></div>' +
+    '</div></div>' +
+    '<div class="legend">' + STATUS.map(s => '<span>' + dot(s.k) + esc(s.l) + '</span>').join('') + '</div>' +
+    '<div class="grid7">' + cells + '</div>' +
+    (mp.length ? '' : '<div class="empty-state">Nenhum post previsto para este mês.</div>') +
+    '</section>';
+}
+
+function viewPauta() {
+  const mp = postsOfMonth();
+  const inCat = mp.filter(p => catOf(p) === ui.cat);
+  const avaliadas = inCat.filter(pautaAvaliada).length;
+  const filters = [{ k: 'todas', l: 'Todas' }].concat(STATUS.map(s => ({ k: s.k, l: s.l })));
+  const fc = k => k === 'todas' ? inCat.length : inCat.filter(p => stPauta(p) === k).length;
+  const list = inCat.filter(p => ui.ppFilter === 'todas' || stPauta(p) === ui.ppFilter);
+  const pct = inCat.length ? Math.round(avaliadas / inCat.length * 100) : 0;
+  return demoBanner() + hero('Pré-pauta e copy', 'Os temas do mês antes da produção. Abra cada pauta para ler o objetivo, o briefing visual, a copy e a legenda. Ajuste o texto se precisar e marque o status. Depois de aprovada, a pauta vira criativo e aparece no acompanhamento.') +
+    '<section class="card section"><div class="section-head"><h2>Pautas do mês</h2><div class="downloads">' +
+    (C.linkPrePauta ? '<a class="btn" href="' + esc(C.linkPrePauta) + '" target="_blank" rel="noopener">📄 Abrir pré-pauta (Google Docs)</a>' : '') +
+    '<button class="btn" data-action="print-pauta">🖨 Baixar pré-pauta em PDF</button></div></div>' +
+    '<div class="tabs">' + CATS.map(c => '<button class="tab' + (ui.cat === c.k ? ' on' : '') + '" data-action="cat" data-cat="' + c.k + '">' + c.l + '<small>' + mp.filter(p => catOf(p) === c.k).length + '</small></button>').join('') + '</div>' +
+    '<div class="progress"><span><b>' + avaliadas + ' de ' + inCat.length + '</b> pautas avaliadas</span><div class="bar"><i style="width:' + pct + '%"></i></div></div>' +
+    '<div class="filters">' + filters.filter(f => f.k === 'todas' || fc(f.k)).map(f => '<button class="filter' + (ui.ppFilter === f.k ? ' on' : '') + '" data-action="ppfilter" data-f="' + f.k + '">' + (f.k !== 'todas' ? dot(f.k) : '') + esc(f.l) + ' <small>' + fc(f.k) + '</small></button>').join('') + '</div>' +
+    '<div class="pautas">' + (list.length ? list.map(pautaItem).join('') : '<div class="empty-state">Nenhuma pauta aqui.</div>') + '</div>' +
+    '</section>';
+}
+function pautaItem(p) {
+  const d = parseDate(p.data);
+  const open = !!ui.open[p.id];
+  const isVid = catOf(p) === 'videos';
+  return '<article class="pauta' + (open ? ' open' : '') + '" data-pauta="' + esc(p.id) + '">' +
+    '<button class="pauta-head" data-action="toggle" data-id="' + esc(p.id) + '" aria-expanded="' + open + '">' +
+    '<div class="date-badge"><b>' + ddmm(p.data) + '</b><span>' + WD[d.wd] + '</span></div>' +
+    '<div><div class="t">' + esc(getField(p, 'tema')) + '</div>' + chipsFor(p) + '</div>' +
+    stPill(stPauta(p)) + '<span class="caret">▾</span></button>' +
+    (open ? '<div class="pauta-body">' +
+      fieldBox(p, 'tema', 'Tema', { rows: 1 }) +
+      fieldBox(p, 'objetivo', 'Objetivo', { rows: 2 }) +
+      fieldBox(p, 'direcionamento', 'Direcionamento visual (briefing)', { rows: 3 }) +
+      (isVid ? fieldBox(p, 'roteiro', 'Roteiro', { rows: 5 }) : fieldBox(p, 'copy', 'Copy do criativo', { rows: 4 })) +
+      fieldBox(p, 'legenda', 'Legenda', { rows: 5, count: true }) +
+      '<div class="field"><div class="field-label">Status da pauta</div>' + statusButtons('pp-' + p.id, stPauta(p)) + '</div>' +
+      commentsBlock('pp-' + p.id) +
+      '</div>' : '') +
+    '</article>';
+}
+
+function viewBoard(cat) {
+  const c = CATS.find(x => x.k === cat);
+  const mp = postsOfMonth().filter(p => catOf(p) === cat);
+  const texts = {
+    criativos: 'Decida sobre o criativo de cada post. O quadro mostra a distribuição por status de uma vez, sem precisar filtrar.',
+    videos: 'Vídeos que ainda não foram gravados ficam com o roteiro editável. Quando o arquivo final chega, o player substitui o roteiro.',
+    stories: 'Conteúdo de Stories, no mesmo quadro das outras abas.'
+  };
+  const cols = STATUS.map(s => {
+    const items = mp.filter(p => stCriativo(p) === s.k);
+    return '<div class="col"><div class="col-head">' + dot(s.k) + esc(s.l) + '<span class="n">' + items.length + '</span></div>' +
+      (items.length ? items.map(postCard).join('') : '<div class="empty-col">Nenhum post</div>') + '</div>';
+  }).join('');
+  return demoBanner() + hero(c.l, texts[cat]) +
+    '<section class="card section"><div class="section-head"><h2>' + MONTHS[ui.month.m] + ' ' + ui.month.y + ' · ' + mp.length + ' posts</h2>' +
+    (cat === 'videos' ? '<button class="btn" data-action="print-roteiros">🖨 Baixar roteiros do mês em PDF</button>' : '') + '</div>' +
+    '<div class="board">' + cols + '</div></section>';
+}
+function postCard(p) {
+  const fs = filesOf(p);
+  const f = fs[0];
+  const cat = catOf(p);
+  const last = (state.comments[p.id] || []).slice(-1)[0];
+  const thumb = f
+    ? '<div class="thumb" style="background-image:url(\'' + thumbOf(f) + '\')">' + (f.tipo === 'video' ? '<div class="play"><i>▶</i></div>' : '') +
+      '<span class="tag">' + esc(p.formato) + '</span>' + (fs.length > 1 ? '<span class="tag cnt">' + fs.length + ' imagens</span>' : '') + '</div>'
+    : '<div class="thumb"><div class="noart"><div><b>' + (cat === 'videos' ? 'Aguardando gravação' : 'Arte em produção') + '</b>' + (cat === 'videos' ? 'Roteiro disponível para revisão' : 'O briefing já está no post') + '</div></div><span class="tag">' + esc(p.formato) + '</span></div>';
+  return '<button class="pcard ' + (cat === 'stories' ? 'story' : cat === 'videos' ? 'video' : '') + '" data-action="open" data-id="' + esc(p.id) + '">' + thumb +
+    '<div class="info"><span class="d">' + ddmm(p.data) + ' · ' + WD[parseDate(p.data).wd] + '</span><span class="t">' + esc(getField(p, 'tema')) + '</span>' +
+    (last ? '<span class="c">"' + esc(last.texto) + '"</span>' : '') + '</div></button>';
+}
+
+/* ---------------- modal ---------------- */
+function openModal(id, list) {
+  ui.modalPost = id; ui.modalPosts = list || null; ui.slide = 0;
+  renderModal();
+  $('#modal').classList.add('open'); $('#modal').setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  $('#modal').scrollTop = 0;
+}
+function closeModal() {
+  if (hasDirty($('#sheet')) && !confirmDiscard()) return;
+  $('#modal').classList.remove('open'); $('#modal').setAttribute('aria-hidden', 'true');
+  $('#sheet').innerHTML = ''; document.body.style.overflow = '';
+  ui.modalPost = null; render();
+}
+function confirmDiscard() { return window.confirm('Há texto editado que não foi salvo. Fechar mesmo assim?'); }
+function renderModal() {
+  const p = postById(ui.modalPost); if (!p) return;
+  const fs = filesOf(p);
+  const cat = catOf(p);
+  const isVid = cat === 'videos';
+  const sheet = $('#sheet');
+  let media;
+  if (!fs.length) {
+    media = '<div class="noart"><b>' + (isVid ? 'Vídeo ainda não gravado' : 'Arte em produção') + '</b>' + (isVid ? 'Revise o roteiro ao lado. Quando o vídeo final chegar, ele aparece aqui.' : 'Quando a arte estiver pronta, ela aparece aqui para aprovação.') + '</div>';
+  } else {
+    const i = Math.min(ui.slide, fs.length - 1), f = fs[i];
+    media = (f.tipo === 'video' ? '<iframe src="' + vidEmbed(f.id) + '" allow="autoplay; fullscreen" allowfullscreen title="Vídeo"></iframe>' : '<img src="' + imgUrl(f.id, 1600) + '" alt="Slide ' + (i + 1) + '">') +
+      (fs.length > 1 ? '<button class="nav-arrow prev" data-action="slide" data-dir="-1" aria-label="Anterior">‹</button><button class="nav-arrow next" data-action="slide" data-dir="1" aria-label="Próximo">›</button><span class="tag counter">' + (i + 1) + ' / ' + fs.length + '</span>' : '');
+  }
+  const siblings = ui.modalPosts && ui.modalPosts.length > 1
+    ? '<div class="day-switch">' + ui.modalPosts.map(id => { const q = postById(id); return '<button class="filter' + (id === p.id ? ' on' : '') + '" data-action="switch" data-id="' + esc(id) + '">' + esc(q.formato) + '</button>'; }).join('') + '</div>' : '';
+  sheet.className = 'sheet';
+  sheet.innerHTML = '<div class="media">' + media + '</div>' +
+    '<div class="detail">' +
+    '<div class="detail-head"><div><div class="d">' + fullDate(p.data) + '</div><h2>' + esc(getField(p, 'tema')) + '</h2></div><button class="close" data-action="close" aria-label="Fechar">✕</button></div>' +
+    siblings + chipsFor(p) +
+    '<div class="field"><div class="field-label">Status do criativo</div>' + statusButtons(p.id, stCriativo(p)) +
+    '<div style="font-size:12px;color:var(--faint)">Pauta: ' + stPill(stPauta(p)) + '</div></div>' +
+    (fs.length ? '<div class="downloads">' + (fs.length === 1 ? '<a class="btn sm" href="' + dlUrl(fs[0].id) + '" target="_blank" rel="noopener">⇩ Baixar ' + (fs[0].tipo === 'video' ? 'vídeo' : 'imagem') + '</a>'
+      : fs.map((f, i) => '<a class="btn sm" href="' + dlUrl(f.id) + '" target="_blank" rel="noopener">⇩ ' + (i + 1) + '</a>').join('')) + '</div>' : '') +
+    '<div class="divider"></div>' +
+    fieldBox(p, 'objetivo', 'Objetivo', { readonly: true }) +
+    fieldBox(p, 'direcionamento', 'Direcionamento visual (briefing)', { rows: 3 }) +
+    (isVid ? fieldBox(p, 'roteiro', 'Roteiro', { rows: 6 }) : fieldBox(p, 'copy', 'Copy do criativo', { rows: 3 })) +
+    fieldBox(p, 'legenda', 'Legenda', { rows: 6, count: true }) +
+    commentsBlock(p.id) +
+    '</div>';
+  requestAnimationFrame(() => autosize(sheet));
+}
+
+/* ---------------- print ---------------- */
+function printDoc(title, items) {
+  const pr = $('#print');
+  pr.innerHTML = '<h1>' + esc(title) + '</h1><div class="sub">' + esc(C.cliente) + ' · ' + MONTHS[ui.month.m] + ' ' + ui.month.y + '</div>' + items.join('');
+  window.print();
+}
+function printSec(label, text) { return text ? '<h4>' + esc(label) + '</h4><p>' + esc(text) + '</p>' : ''; }
+function printRoteiros() {
+  const vids = postsOfMonth().filter(p => catOf(p) === 'videos');
+  if (!vids.length) return toast('Nenhum vídeo neste mês.');
+  printDoc('Roteiros do mês', vids.map(p => '<div class="item"><h3>' + esc(getField(p, 'tema')) + '</h3><div class="meta">' + fullDate(p.data) + ' · ' + esc(p.formato) + '</div>' +
+    printSec('Objetivo', getField(p, 'objetivo')) + printSec('Direcionamento', getField(p, 'direcionamento')) + printSec('Roteiro', getField(p, 'roteiro')) + printSec('Legenda', getField(p, 'legenda')) + '</div>'));
+}
+function printPauta() {
+  const mp = postsOfMonth();
+  if (!mp.length) return toast('Nenhuma pauta neste mês.');
+  printDoc('Pré-pauta do mês', mp.map(p => '<div class="item"><h3>' + esc(getField(p, 'tema')) + '</h3><div class="meta">' + fullDate(p.data) + ' · ' + esc(p.formato) + ' · ' + esc((p.redes || []).join(', ')) + ' · ' + ST[stPauta(p)].l + '</div>' +
+    printSec('Objetivo', getField(p, 'objetivo')) + printSec('Direcionamento visual', getField(p, 'direcionamento')) + printSec(catOf(p) === 'videos' ? 'Roteiro' : 'Copy do criativo', getField(p, catOf(p) === 'videos' ? 'roteiro' : 'copy')) + printSec('Legenda', getField(p, 'legenda')) + '</div>'));
+}
+
+/* ---------------- render / routing ---------------- */
+function autosize(root) {
+  (root || document).querySelectorAll('textarea[data-field]').forEach(t => { t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight + 2, 520) + 'px'; });
+}
+function hasDirty(root) { return !!(root && root.querySelector('textarea[data-field].dirty')); }
+function render() {
+  const r = (location.hash.replace(/^#\/?/, '') || 'home').split('?')[0];
+  ui.route = ['home', 'calendario', 'pauta', 'criativos', 'videos', 'stories'].includes(r) ? r : 'home';
+  renderNav();
+  const v = $('#view');
+  v.innerHTML = ui.route === 'home' ? viewHome() : ui.route === 'calendario' ? viewCalendar() : ui.route === 'pauta' ? viewPauta() : viewBoard(ui.route);
+  autosize(v);
+}
+window.addEventListener('hashchange', () => {
+  if (hasDirty($('#view')) && !confirmDiscard()) return;
+  render(); window.scrollTo(0, 0);
+});
+
+/* ---------------- events ---------------- */
+document.addEventListener('click', async e => {
+  const el = e.target.closest('[data-action]');
+  if (!el) { if (e.target.id === 'modal') closeModal(); return; }
+  const a = el.dataset.action;
+  if (a === 'month') {
+    if (hasDirty(document) && !confirmDiscard()) return;
+    let m = ui.month.m + Number(el.dataset.dir), y = ui.month.y;
+    if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; }
+    ui.month = { y, m }; ui.open = {}; render();
+  } else if (a === 'theme') {
+    const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', cur); lsSet('naves-tema', cur); syncTheme();
+  } else if (a === 'day') {
+    const ids = postsOfMonth().filter(p => p.data === el.dataset.date).map(p => p.id);
+    openModal(ids[0], ids);
+  } else if (a === 'open') {
+    openModal(el.dataset.id);
+  } else if (a === 'switch') {
+    if (hasDirty($('#sheet')) && !confirmDiscard()) return;
+    ui.modalPost = el.dataset.id; ui.slide = 0; renderModal();
+  } else if (a === 'close') {
+    closeModal();
+  } else if (a === 'slide') {
+    const n = filesOf(postById(ui.modalPost)).length;
+    ui.slide = (ui.slide + Number(el.dataset.dir) + n) % n;
+    const dirty = hasDirty($('#sheet'));
+    if (dirty) { // só troca a mídia, preservando textos em edição
+      const tmp = document.createElement('div'); const keep = $('#sheet .detail');
+      renderModal(); $('#sheet .detail').replaceWith(keep); tmp.remove();
+    } else renderModal();
+  } else if (a === 'status') {
+    const key = el.dataset.key, val = el.dataset.val;
+    el.parentElement.querySelectorAll('.st-btn').forEach(b => b.classList.toggle('on', b === el));
+    await saveStatus(key, val);
+    toast('Status: ' + ST[val].l);
+    if (ui.modalPost) { renderNav(); } else rerenderKeepOpen();
+  } else if (a === 'cat') {
+    ui.cat = el.dataset.cat; ui.ppFilter = 'todas'; render();
+  } else if (a === 'ppfilter') {
+    ui.ppFilter = el.dataset.f; render();
+  } else if (a === 'toggle') {
+    const id = el.dataset.id;
+    if (ui.open[id] && hasDirty(el.closest('.pauta')) && !confirmDiscard()) return;
+    ui.open[id] = !ui.open[id]; rerenderKeepOpen();
+  } else if (a === 'save-field') {
+    const wrap = el.closest('[data-fieldwrap]'); const ta = wrap.querySelector('textarea');
+    const p = postById(ta.dataset.id);
+    el.disabled = true; el.textContent = 'Salvando…';
+    const ok = await saveField(p.id, ta.dataset.field, ta.value);
+    el.textContent = 'Salvar';
+    if (ok) { ta.classList.remove('dirty'); wrap.querySelector('[data-saved]').style.visibility = 'visible'; toast('Texto salvo'); if (ta.dataset.field === 'tema') renderNav(); }
+    else el.disabled = false;
+  } else if (a === 'comment') {
+    const form = el.closest('[data-cform]');
+    const texto = form.querySelector('[data-ctext]').value.trim();
+    const autor = form.querySelector('[data-cname]').value.trim();
+    if (!texto) { form.querySelector('[data-ctext]').focus(); return; }
+    if (autor) lsSet('naves-nome', autor);
+    el.disabled = true;
+    await addComment(form.dataset.cform, autor, texto);
+    toast('Comentário enviado');
+    if (ui.modalPost) {
+      const keep = hasDirty($('#sheet'));
+      if (!keep) { renderModal(); } else { form.querySelector('[data-ctext]').value = ''; el.disabled = false; }
+    } else rerenderKeepOpen();
+  } else if (a === 'print-roteiros') printRoteiros();
+  else if (a === 'print-pauta') printPauta();
+});
+function rerenderKeepOpen() {
+  // re-renderiza a view sem perder textos não salvos
+  const v = $('#view');
+  const drafts = [...v.querySelectorAll('textarea[data-field].dirty')].map(t => ({ id: t.dataset.id, f: t.dataset.field, v: t.value }));
+  const y = window.scrollY;
+  render();
+  drafts.forEach(d => {
+    const t = v.querySelector('textarea[data-id="' + CSS.escape(d.id) + '"][data-field="' + d.f + '"]');
+    if (t) { t.value = d.v; markDirty(t); }
+  });
+  window.scrollTo(0, y);
+}
+function markDirty(t) {
+  const wrap = t.closest('[data-fieldwrap]'); if (!wrap) return;
+  t.classList.add('dirty');
+  wrap.querySelector('[data-saved]').style.visibility = 'hidden';
+  wrap.querySelector('[data-action="save-field"]').disabled = false;
+}
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.matches('textarea[data-field]')) {
+    markDirty(t); autosize(t.parentElement);
+    const c =t.closest('[data-fieldwrap]').querySelector('[data-count]');
+    if (c) c.textContent = t.value.length + ' caracteres';
+  } else if (t.matches('[data-ctext]')) {
+    t.closest('[data-cform]').querySelector('[data-ccount]').textContent = t.value.length + ' caracteres';
+  }
+});
+document.addEventListener('keydown', e => {
+  if (!$('#modal').classList.contains('open')) return;
+  if (e.key === 'Escape') closeModal();
+  if (e.target.matches('textarea, input')) return;
+  if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+    const btn = $('#sheet .nav-arrow.' + (e.key === 'ArrowRight' ? 'next' : 'prev'));
+    if (btn) btn.click();
+  }
+});
+window.addEventListener('beforeunload', e => { if (hasDirty(document)) { e.preventDefault(); e.returnValue = ''; } });
+document.addEventListener('visibilitychange', async () => {
+  if (document.visibilityState !== 'visible' || DEMO) return;
+  if (ui.modalPost || hasDirty(document)) return;
+  await loadAll(); rerenderKeepOpen();
+});
+
+function syncTheme() {
+  const dark = document.documentElement.getAttribute('data-theme') !== 'light';
+  $('#themeSwitch').setAttribute('aria-checked', String(dark));
+}
+
+/* ---------------- init ---------------- */
+$('#subtitle').textContent = C.subtitulo || 'Portal Social Media';
+$('#agency').textContent = C.agencia ? 'Feito por ' + C.agencia : '';
+document.title = (C.cliente || 'Naves Aero') + ' · ' + (C.subtitulo || 'Portal Social Media');
+syncTheme();
+render();
+loadAll().then(render);
+})();
+</script>
+</body>
+</html>
