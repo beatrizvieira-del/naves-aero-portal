@@ -175,6 +175,7 @@ h2 { font-size: 19px; margin: 0; font-weight: 800; letter-spacing: -.01em; }
 .day .foot { position: absolute; left: 8px; bottom: 7px; right: 8px; display: flex; align-items: center; gap: 5px; z-index: 2; }
 .day .more { font-size: 10.5px; font-weight: 800; color: #fff; background: rgba(0,0,0,.55); border-radius: 99px; padding: 1px 6px; margin-left: auto; }
 .day:not(.empty):hover { border-color: var(--accent); }
+@media (max-width: 1180px) { .day .fmt { display: none; } .day .ph { padding-top: 26px; } }
 
 .tag {
   display: inline-flex; align-items: center; gap: 4px; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; font-weight: 800;
