@@ -16,8 +16,8 @@ window.PORTAL_CONFIG = {
   // Supabase: guarda status, comentários e textos editados para todos
   // que abrem o link. Sem isso, o portal funciona em "modo demonstração"
   // (o que você muda fica salvo só no seu navegador).
-  supabaseUrl: '',   // ex.: 'https://abcdefgh.supabase.co'
-  supabaseKey: '',   // a chave "publishable" / "anon" do projeto
+  supabaseUrl: 'https://lvldlxchewbigsihiqhi.supabase.co',   // ex.: 'https://abcdefgh.supabase.co'
+  supabaseKey: 'sb_publishable_g2QGy2wOPsMsi4TyfZvK8g_8z4xegIS',   // a chave "publishable" / "anon" do projeto
 
   // Link da pré-pauta no Google Docs (botão "Abrir pré-pauta"). Opcional.
   linkPrePauta: 'https://docs.google.com/document/d/1Fr1o2c7iTSLImYBPpNqvyn5k18Bxp-mRgX-BjMx5eL8/edit'
