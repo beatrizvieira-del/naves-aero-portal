@@ -19,6 +19,10 @@ window.PORTAL_CONFIG = {
   supabaseUrl: 'https://lvldlxchewbigsihiqhi.supabase.co',   // ex.: 'https://abcdefgh.supabase.co'
   supabaseKey: 'sb_publishable_g2QGy2wOPsMsi4TyfZvK8g_8z4xegIS',   // a chave "publishable" / "anon" do projeto
 
+  // Código do link do designer: naves-aero-portal.vercel.app/?design=CÓDIGO
+  // Esse link mostra o campo "Arte do post". Troque o código se o link vazar.
+  codigoDesigner: '630a4239',
+
   // Link da pré-pauta no Google Docs (botão "Abrir pré-pauta"). Opcional.
   linkPrePauta: 'https://docs.google.com/document/d/1Fr1o2c7iTSLImYBPpNqvyn5k18Bxp-mRgX-BjMx5eL8/edit'
 };

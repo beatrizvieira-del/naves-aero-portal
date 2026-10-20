@@ -307,6 +307,11 @@ textarea:focus { outline: none; border-color: var(--accent); }
 .day-switch { display: flex; gap: 6px; flex-wrap: wrap; }
 .downloads { display: flex; gap: 8px; flex-wrap: wrap; }
 .divider { height: 1px; background: var(--line); }
+.arte-box { border: 1px dashed color-mix(in srgb, var(--accent) 55%, transparent); background: var(--accent-soft); border-radius: 14px; padding: 14px; }
+.arte-help { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+.arte-help code { background: var(--surface-3); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+.media .broken { color: #aab3bf; text-align: center; padding: 30px; font-size: 13.5px; max-width: 340px; }
+.media .broken b { display: block; color: #fff; font-size: 15px; margin-bottom: 6px; }
 
 .toast { position: fixed; bottom: 20px; left: 50%; transform: translate(-50%, 30px); opacity: 0; background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-weight: 700; font-size: 13px; z-index: 80; transition: all .25s; pointer-events: none; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
@@ -410,6 +415,11 @@ const C = window.PORTAL_CONFIG || {};
 const POSTS = (window.PORTAL_POSTS || []).slice().sort((a, b) => (a.data + a.id).localeCompare(b.data + b.id));
 const SLUG = C.slug || 'naves-aero';
 const DEMO = !(C.supabaseUrl && C.supabaseKey);
+const DESIGN = (function () {
+  let t = null;
+  try { t = new URLSearchParams(location.search).get('design'); } catch (e) {}
+  return !!(C.codigoDesigner && t === C.codigoDesigner);
+})();
 const LS_KEY = 'naves-portal-' + SLUG;
 
 const STATUS = [
@@ -443,8 +453,26 @@ function catOf(p) {
   if (f.includes('reel') || f.includes('vídeo') || f.includes('video')) return 'videos';
   return 'criativos';
 }
+/* Arquivos do post: o que o designer colou no portal (campo "arquivos") tem
+   prioridade sobre a lista do conteudo.js. Aceita links do Drive ou IDs, um por linha.
+   "video" no início da linha força o tipo vídeo (ex.: Story em vídeo). */
+function driveId(line) {
+  const s = line.trim();
+  let m = s.match(/\/d\/([\w-]{15,})/) || s.match(/[?&]id=([\w-]{15,})/);
+  if (m) return m[1];
+  m = s.match(/(^|\s)([\w-]{20,})$/);
+  return m ? m[2] : null;
+}
+function parseArquivos(text, isVid) {
+  return String(text || '').split('\n').map(l => l.trim()).filter(Boolean).map(l => {
+    const id = driveId(l); if (!id) return null;
+    return { id, tipo: /^v[ií]deo\b/i.test(l) || isVid ? 'video' : 'imagem' };
+  }).filter(Boolean);
+}
 function filesOf(p) {
   const isVid = catOf(p) === 'videos';
+  const fromPortal = state.fields[p.id] && state.fields[p.id].arquivos;
+  if (fromPortal != null && fromPortal !== '') return parseArquivos(fromPortal, isVid);
   return (p.arquivos || []).filter(Boolean).map(a => typeof a === 'string' ? { id: a, tipo: isVid ? 'video' : 'imagem' } : a);
 }
 const imgUrl = (id, w) => 'https://lh3.googleusercontent.com/d/' + id + '=w' + (w || 1200);
@@ -559,6 +587,17 @@ function fieldBox(p, name, label, opts) {
     '<div class="field-actions"><span class="saved" data-saved>Salvo ✓</span><button class="btn sm" data-action="save-field" disabled>Salvar</button></div>' +
     '</div>';
 }
+function arteBox(p) {
+  const saved = state.fields[p.id] && state.fields[p.id].arquivos;
+  const val = saved != null ? saved : (p.arquivos || []).map(a => typeof a === 'string' ? a : a.id).join('\n');
+  const n = filesOf(p).length;
+  return '<div class="field arte-box" data-fieldwrap>' +
+    '<div class="field-label">Arte do post <em>' + (n ? n + (n > 1 ? ' arquivos' : ' arquivo') : 'nenhum arquivo') + '</em></div>' +
+    '<div class="arte-help">Cole os links do Google Drive, <b>um por linha, na ordem dos slides</b>. A pasta precisa estar como "Qualquer pessoa com o link". Story em vídeo: escreva <code>video</code> antes do link. Ao salvar, o criativo volta para "Aguardando" e a equipe já vê a arte.</div>' +
+    '<textarea rows="3" data-field="arquivos" data-id="' + esc(p.id) + '" placeholder="https://drive.google.com/file/d/.../view">' + esc(val) + '</textarea>' +
+    '<div class="field-actions"><span class="saved" data-saved style="visibility:hidden">Salvo ✓</span><button class="btn primary sm" data-action="save-field" disabled>Salvar</button></div>' +
+    '</div>';
+}
 function commentsBlock(key) {
   const list = state.comments[key] || [];
   const nome = lsGet('naves-nome', '');
@@ -604,7 +643,7 @@ function hero(title, text) {
     '<h1>' + esc(title) + '</h1><p class="lead">' + text + '</p></section>';
 }
 function demoBanner() {
-  return DEMO ? '<div class="demo-banner"><b>Modo demonstração.</b> O banco de dados ainda não foi conectado: status, comentários e textos editados ficam salvos só neste navegador.</div>' : '';
+  return (DESIGN ? '<div class="demo-banner"><b>Link do designer.</b> Abra um post e cole os links do Drive no campo "Arte do post". Este link é só seu: a equipe não vê esse campo.</div>' : '') + (DEMO ?'<div class="demo-banner"><b>Modo demonstração.</b> O banco de dados ainda não foi conectado: status, comentários e textos editados ficam salvos só neste navegador.</div>' : '');
 }
 
 function viewHome() {
@@ -763,7 +802,7 @@ function renderModal() {
     media = '<div class="noart"><b>' + (isVid ? 'Vídeo ainda não gravado' : 'Arte em produção') + '</b>' + (isVid ? 'Revise o roteiro ao lado. Quando o vídeo final chegar, ele aparece aqui.' : 'Quando a arte estiver pronta, ela aparece aqui para aprovação.') + '</div>';
   } else {
     const i = Math.min(ui.slide, fs.length - 1), f = fs[i];
-    media = (f.tipo === 'video' ? '<iframe src="' + vidEmbed(f.id) + '" allow="autoplay; fullscreen" allowfullscreen title="Vídeo"></iframe>' : '<img src="' + imgUrl(f.id, 1600) + '" alt="Slide ' + (i + 1) + '">') +
+    media = (f.tipo === 'video' ? '<iframe src="' + vidEmbed(f.id) + '" allow="autoplay; fullscreen" allowfullscreen title="Vídeo"></iframe>' : '<img src="' + imgUrl(f.id, 1600) + '" alt="Slide ' + (i + 1) + '" onerror="this.outerHTML=\'<div class=&quot;broken&quot;><b>Não consegui abrir esta imagem</b>Confira se o arquivo no Drive está compartilhado como “Qualquer pessoa com o link”.</div>\'">') +
       (fs.length > 1 ? '<button class="nav-arrow prev" data-action="slide" data-dir="-1" aria-label="Anterior">‹</button><button class="nav-arrow next" data-action="slide" data-dir="1" aria-label="Próximo">›</button><span class="tag counter">' + (i + 1) + ' / ' + fs.length + '</span>' : '');
   }
   const siblings = ui.modalPosts && ui.modalPosts.length > 1
@@ -777,6 +816,7 @@ function renderModal() {
     '<div style="font-size:12px;color:var(--faint)">Pauta: ' + stPill(stPauta(p)) + '</div></div>' +
     (fs.length ? '<div class="downloads">' + (fs.length === 1 ? '<a class="btn sm" href="' + dlUrl(fs[0].id) + '" target="_blank" rel="noopener">⇩ Baixar ' + (fs[0].tipo === 'video' ? 'vídeo' : 'imagem') + '</a>'
       : fs.map((f, i) => '<a class="btn sm" href="' + dlUrl(f.id) + '" target="_blank" rel="noopener">⇩ ' + (i + 1) + '</a>').join('')) + '</div>' : '') +
+    (DESIGN ? arteBox(p) : '') +
     '<div class="divider"></div>' +
     fieldBox(p, 'objetivo', 'Objetivo', { readonly: true }) +
     fieldBox(p, 'direcionamento', 'Direcionamento visual (briefing)', { rows: 3 }) +
@@ -874,9 +914,19 @@ document.addEventListener('click', async e => {
     const wrap = el.closest('[data-fieldwrap]'); const ta = wrap.querySelector('textarea');
     const p = postById(ta.dataset.id);
     el.disabled = true; el.textContent = 'Salvando…';
+    if (ta.dataset.field === 'arquivos') {
+      const lines = ta.value.split('\n').filter(l => l.trim());
+      const n = parseArquivos(ta.value, false).length;
+      if (lines.length && n < lines.length) { toast('Algum link não é do Google Drive. Confira e tente de novo.'); el.disabled = false; el.textContent = 'Salvar'; return; }
+    }
     const ok = await saveField(p.id, ta.dataset.field, ta.value);
     el.textContent = 'Salvar';
-    if (ok) { ta.classList.remove('dirty'); wrap.querySelector('[data-saved]').style.visibility = 'visible'; toast('Texto salvo'); if (ta.dataset.field === 'tema') renderNav(); }
+    if (ok && ta.dataset.field === 'arquivos') {
+      ta.classList.remove('dirty');
+      await saveStatus(p.id, 'aguardando');
+      toast(ta.value.trim() ? 'Arte enviada para aprovação' : 'Arte removida');
+      ui.slide = 0; renderModal(); renderNav();
+    } else if (ok) { ta.classList.remove('dirty'); wrap.querySelector('[data-saved]').style.visibility = 'visible'; toast('Texto salvo'); if (ta.dataset.field === 'tema') renderNav(); }
     else el.disabled = false;
   } else if (a === 'comment') {
     const form = el.closest('[data-cform]');
