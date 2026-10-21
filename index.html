@@ -258,6 +258,13 @@ textarea:focus { outline: none; border-color: var(--accent); }
 .comment .meta { font-size: 11.5px; color: var(--faint); font-weight: 600; margin-bottom: 2px; }
 .comment .meta b { color: var(--text); }
 .comment p { margin: 0; white-space: pre-wrap; }
+.comment .meta { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.c-actions { margin-left: auto; display: inline-flex; gap: 10px; }
+.link-btn { background: none; border: 0; padding: 0; font-size: 11.5px; font-weight: 700; color: var(--muted); text-decoration: underline; text-underline-offset: 2px; }
+.link-btn:hover { color: var(--text); }
+.link-btn.danger:hover, .link-btn.confirm { color: var(--st-reprovado); }
+.c-edit { display: grid; gap: 6px; margin-top: 4px; }
+.c-edit textarea { min-height: 64px; }
 .no-comments { font-size: 13px; color: var(--faint); }
 .comment-form { display: grid; gap: 8px; }
 .comment-form input { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; font-size: 13.5px; }
@@ -525,22 +532,45 @@ async function loadAll() {
   try {
     const [st, cm, fl] = await Promise.all([
       get('post_status' + q + '&select=post_key,status'),
-      get('post_comments' + q + '&select=post_key,comment_text,created_at&order=created_at.asc'),
+      get('post_comments' + q + '&select=id,post_key,comment_text,created_at,edited_at,autor_hash&order=created_at.asc')
+        .catch(() => get('post_comments' + q + '&select=id,post_key,comment_text,created_at&order=created_at.asc')),
       get('post_fields' + q + '&select=post_key,field_name,field_value')
     ]);
     const s = {}, c = {}, f = {};
     st.forEach(r => { s[r.post_key] = r.status; });
-    cm.forEach(r => { (c[r.post_key] = c[r.post_key] || []).push(parseComment(r.comment_text, r.created_at)); });
+    cm.forEach(r => { (c[r.post_key] = c[r.post_key] || []).push(parseComment(r)); });
     fl.forEach(r => { (f[r.post_key] = f[r.post_key] || {})[r.field_name] = r.field_value; });
     state.status = s; state.comments = c; state.fields = f;
   } catch (e) {
     toast('Não consegui carregar os dados salvos. Verifique a conexão.');
   }
 }
-function parseComment(text, ts) {
+/* Identidade de quem comenta: um código aleatório guardado neste navegador.
+   O banco guarda só o "hash" desse código; editar ou apagar exige o código original,
+   então cada pessoa só mexe nos próprios comentários. */
+let MY_TOKEN = lsGet('naves-autor-token', '');
+if (!MY_TOKEN) {
+  const a = new Uint8Array(16); (window.crypto || {}).getRandomValues ? crypto.getRandomValues(a) : a.forEach((_, i) => { a[i] = Math.random() * 256; });
+  MY_TOKEN = [...a].map(b => b.toString(16).padStart(2, '0')).join(''); lsSet('naves-autor-token', MY_TOKEN);
+}
+let MY_HASH = '';
+async function sha256(t) {
+  if (!(window.crypto && crypto.subtle)) return '';
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+function splitAutor(text) {
   const i = text.indexOf('::');
-  const autor = i > 0 && i < 60 ? text.slice(0, i) : '';
-  return { autor, texto: i > 0 && i < 60 ? text.slice(i + 2) : text, ts };
+  return i > 0 && i < 60 ? { autor: text.slice(0, i), texto: text.slice(i + 2) } : { autor: '', texto: text };
+}
+function parseComment(r) {
+  const s = splitAutor(r.comment_text || '');
+  return { id: r.id, autor: s.autor, texto: s.texto, ts: r.created_at, edited: !!r.edited_at, mine: !!(MY_HASH && r.autor_hash === MY_HASH) };
+}
+async function rpc(fn, body) {
+  const r = await fetch(C.supabaseUrl + '/rest/v1/rpc/' + fn, { method: 'POST', headers: HEADERS, body: JSON.stringify(body) });
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
 }
 async function remote(table, body, upsert) {
   const h = Object.assign({}, HEADERS, upsert ? { Prefer: 'resolution=merge-duplicates,return=minimal' } : { Prefer: 'return=minimal' });
@@ -559,12 +589,37 @@ async function saveField(id, name, val) {
   try { await remote('post_fields', { client_slug: SLUG, post_key: id, field_name: name, field_value: val, updated_at: new Date().toISOString() }, true); return true; }
   catch (e) { toast('Não foi possível salvar o texto. Tente de novo.'); return false; }
 }
+const joinAutor = (autor, texto) => (autor ? autor.replace(/::/g, ':') + '::' : '') + texto;
 async function addComment(key, autor, texto) {
-  const c = { autor, texto, ts: new Date().toISOString() };
+  const c = { id: DEMO ? 'local-' + Date.now() : null, autor, texto, ts: new Date().toISOString(), mine: true };
   (state.comments[key] = state.comments[key] || []).push(c);
   if (DEMO) return localSave();
-  try { await remote('post_comments', { client_slug: SLUG, post_key: key, comment_text: (autor ? autor.replace(/::/g, ':') + '::' : '') + texto }); }
-  catch (e) { toast('Não foi possível enviar o comentário. Tente de novo.'); }
+  try {
+    const h = Object.assign({}, HEADERS, { Prefer: 'return=representation' });
+    const send = withHash => fetch(C.supabaseUrl + '/rest/v1/post_comments?select=id', { method: 'POST', headers: h,
+      body: JSON.stringify(Object.assign({ client_slug: SLUG, post_key: key, comment_text: joinAutor(autor, texto) }, withHash ? { autor_hash: MY_HASH || null } : {})) });
+    let r = await send(true);
+    if (r.status === 400) { r = await send(false); c.mine = false; } // banco ainda sem a coluna autor_hash
+    if (!r.ok) throw new Error(r.status);
+    const rows = await r.json(); c.id = rows[0] && rows[0].id;
+  } catch (e) { toast('Não foi possível enviar o comentário. Tente de novo.'); }
+}
+function findComment(key, id) { return (state.comments[key] || []).find(c => String(c.id) === String(id)); }
+async function editComment(key, id, texto) {
+  const c = findComment(key, id); if (!c || !c.mine) return false;
+  if (!DEMO) {
+    try { const ok = await rpc('editar_comentario', { p_id: Number(id), p_token: MY_TOKEN, p_texto: joinAutor(c.autor, texto) }); if (!ok) throw new Error('negado'); }
+    catch (e) { toast('Não foi possível editar o comentário.'); return false; }
+  }
+  c.texto = texto; c.edited = true; if (DEMO) localSave(); return true;
+}
+async function deleteComment(key, id) {
+  const c = findComment(key, id); if (!c || !c.mine) return false;
+  if (!DEMO) {
+    try { const ok = await rpc('apagar_comentario', { p_id: Number(id), p_token: MY_TOKEN }); if (!ok) throw new Error('negado'); }
+    catch (e) { toast('Não foi possível apagar o comentário.'); return false; }
+  }
+  state.comments[key] = state.comments[key].filter(x => x !== c); if (DEMO) localSave(); return true;
 }
 
 /* ---------------- UI bits ---------------- */
@@ -613,7 +668,10 @@ function commentsBlock(key) {
   return '<div class="field"><div class="field-label">Comentários <em>' + list.length + '</em></div>' +
     '<div class="comments">' + (list.length ? list.map(c => {
       const d = c.ts ? new Date(c.ts).toLocaleDateString('pt-BR') : '';
-      return '<div class="comment"><div class="meta">' + (c.autor ? '<b>' + esc(c.autor) + '</b> · ' : '') + esc(d) + '</div><p>' + esc(c.texto) + '</p></div>';
+      const own = c.mine && c.id != null;
+      return '<div class="comment" data-cid="' + esc(c.id) + '" data-ckey="' + esc(key) + '"><div class="meta">' + (c.autor ? '<b>' + esc(c.autor) + '</b> · ' : '') + esc(d) + (c.edited ? ' · editado' : '') +
+        (own ? '<span class="c-actions"><button class="link-btn" data-action="c-edit">Editar</button><button class="link-btn danger" data-action="c-del">Apagar</button></span>' : '') +
+        '</div><p>' + esc(c.texto) + '</p></div>';
     }).join('') : '<div class="no-comments">Nenhum comentário ainda.</div>') + '</div>' +
     '<div class="comment-form" data-cform="' + esc(key) + '">' +
     '<input type="text" data-cname placeholder="Seu nome" value="' + esc(nome) + '" maxlength="40">' +
@@ -950,9 +1008,35 @@ document.addEventListener('click', async e => {
       const keep = hasDirty($('#sheet'));
       if (!keep) { renderModal(); } else { form.querySelector('[data-ctext]').value = ''; el.disabled = false; }
     } else rerenderKeepOpen();
+  } else if (a === 'c-edit') {
+    const box = el.closest('.comment'); const c = findComment(box.dataset.ckey, box.dataset.cid); if (!c) return;
+    box.querySelector('p').outerHTML = '<div class="c-edit"><textarea rows="3">' + esc(c.texto) + '</textarea><div class="field-actions"><button class="btn sm" data-action="c-cancel">Cancelar</button><button class="btn primary sm" data-action="c-save">Salvar</button></div></div>';
+    box.querySelector('.c-actions').style.display = 'none';
+    const ta = box.querySelector('.c-edit textarea'); ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
+  } else if (a === 'c-cancel') {
+    refreshAfterComment();
+  } else if (a === 'c-save') {
+    const box = el.closest('.comment'); const texto = box.querySelector('.c-edit textarea').value.trim();
+    if (!texto) { toast('O comentário não pode ficar vazio. Use "Apagar" para removê-lo.'); return; }
+    el.disabled = true;
+    if (await editComment(box.dataset.ckey, box.dataset.cid, texto)) { toast('Comentário editado'); refreshAfterComment(); } else el.disabled = false;
+  } else if (a === 'c-del') {
+    if (!el.classList.contains('confirm')) { el.classList.add('confirm'); el.textContent = 'Confirmar?'; setTimeout(() => { if (el.isConnected) { el.classList.remove('confirm'); el.textContent = 'Apagar'; } }, 4000); return; }
+    const box = el.closest('.comment'); el.disabled = true;
+    if (await deleteComment(box.dataset.ckey, box.dataset.cid)) { toast('Comentário apagado'); refreshAfterComment(); } else el.disabled = false;
   } else if (a === 'print-roteiros') printRoteiros();
   else if (a === 'print-pauta') printPauta();
 });
+function refreshAfterComment() {
+  if (ui.modalPost) {
+    if (!hasDirty($('#sheet'))) return renderModal();
+    // há texto não salvo no post: atualiza só a lista de comentários
+    const old = $('#sheet .comments'); if (!old) return;
+    const key = old.closest('.field').querySelector('[data-cform]').dataset.cform;
+    const tmp = document.createElement('div'); tmp.innerHTML = commentsBlock(key);
+    old.replaceWith(tmp.querySelector('.comments'));
+  } else rerenderKeepOpen();
+}
 function rerenderKeepOpen() {
   // re-renderiza a view sem perder textos não salvos
   const v = $('#view');
@@ -1008,7 +1092,7 @@ $('#agency').textContent = C.agencia ? 'Feito por ' + C.agencia : '';
 document.title = (C.cliente || 'Naves Aero') + ' · ' + (C.subtitulo || 'Portal Social Media');
 syncTheme();
 render();
-loadAll().then(render);
+sha256(MY_TOKEN).then(h => { MY_HASH = h; }).finally(() => loadAll().then(render));
 })();
 </script>
 </body>
