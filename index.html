@@ -624,7 +624,37 @@ async function deleteComment(key, id) {
 
 /* ---------------- UI bits ---------------- */
 let toastT;
-function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2600); }
+function toast(msg, ms) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), ms || 2600); }
+
+/* ---------- aviso ao designer no Google Chat ----------
+   Dispara quando o post fica "Em ajustes" ou "Não aprovado" E há um comentário explicando.
+   - marcou o status e já havia comentário recente (30 min) → avisa na hora
+   - marcou o status sem comentário → fica pendente e avisa quando o comentário for enviado
+   O envio é feito pelo Supabase (função avisar_designer); a URL do webhook não fica no site. */
+const AVISO_ST = ['ajustes', 'reprovado'];
+const postOfKey = key => postById(key.replace(/^pp-/, ''));
+async function avisarDesigner(key, comentario) {
+  if (DEMO) return false;
+  const p = postOfKey(key); if (!p) return false;
+  try {
+    const r = await rpc('avisar_designer', { p_slug: SLUG, p_post_key: key, p_titulo: getField(p, 'tema'),
+      p_detalhe: (p.formato || 'Post') + ' · ' + ddmm(p.data), p_autor: comentario.autor || '', p_comentario: comentario.texto || '' });
+    if (r === 'ok') { toast('Designer avisado no Google Chat', 3500); return true; }
+    return false;
+  } catch (e) { return false; }
+}
+async function aposMudarStatus(key, val) {
+  if (DEMO || !AVISO_ST.includes(val)) return;
+  const last = (state.comments[key] || []).slice(-1)[0];
+  const recente = last && last.ts && (Date.now() - new Date(last.ts).getTime()) < 30 * 60 * 1000;
+  if (recente) { await avisarDesigner(key, last); await saveField(key, 'aviso_pendente', ''); }
+  else { await saveField(key, 'aviso_pendente', '1'); toast('Escreva nos comentários o que precisa ajustar: o designer é avisado quando você enviar.', 6000); }
+}
+async function aposComentar(key, comentario) {
+  if (DEMO) return;
+  const pend = state.fields[key] && state.fields[key].aviso_pendente === '1';
+  if (pend && AVISO_ST.includes(state.status[key])) { if (await avisarDesigner(key, comentario)) await saveField(key, 'aviso_pendente', ''); }
+}
 const dot = k => '<i class="dot" style="background:' + ST[k].c + '"></i>';
 const stPill = k => '<span class="st-pill">' + dot(k) + esc(ST[k].l) + '</span>';
 function chipsFor(p) {
@@ -969,6 +999,7 @@ document.addEventListener('click', async e => {
     await saveStatus(key, val);
     toast('Status: ' + ST[val].l);
     if (ui.modalPost) { renderNav(); } else rerenderKeepOpen();
+    aposMudarStatus(key, val);
   } else if (a === 'cat') {
     ui.cat = el.dataset.cat; ui.ppFilter = 'todas'; render();
   } else if (a === 'ppfilter') {
@@ -1003,6 +1034,7 @@ document.addEventListener('click', async e => {
     if (autor) lsSet('naves-nome', autor);
     el.disabled = true;
     await addComment(form.dataset.cform, autor, texto);
+    aposComentar(form.dataset.cform, { autor, texto });
     toast('Comentário enviado');
     if (ui.modalPost) {
       const keep = hasDirty($('#sheet'));
@@ -1092,7 +1124,17 @@ $('#agency').textContent = C.agencia ? 'Feito por ' + C.agencia : '';
 document.title = (C.cliente || 'Naves Aero') + ' · ' + (C.subtitulo || 'Portal Social Media');
 syncTheme();
 render();
-sha256(MY_TOKEN).then(h => { MY_HASH = h; }).finally(() => loadAll().then(render));
+/* link direto para um post: ?post=ID (criativo) ou ?post=pp-ID (pauta) */
+function abrirPostDoLink() {
+  let key = null; try { key = new URLSearchParams(location.search).get('post'); } catch (e) {}
+  if (!key) return;
+  const p = postOfKey(key); if (!p) return;
+  const d = parseDate(p.data); ui.month = { y: d.y, m: d.m };
+  if (key.startsWith('pp-')) { ui.cat = catOf(p); ui.open[p.id] = true; location.hash = '#/pauta'; render();
+    setTimeout(() => { const el = document.querySelector('[data-pauta="' + CSS.escape(p.id) + '"]'); if (el) el.scrollIntoView({ block: 'start' }); }, 50); }
+  else { if (!location.hash || location.hash === '#/home') location.hash = '#/' + catOf(p); render(); openModal(p.id); }
+}
+sha256(MY_TOKEN).then(h => { MY_HASH = h; }).finally(() => loadAll().then(() => { render(); abrirPostDoLink(); }));
 })();
 </script>
 </body>
