@@ -273,7 +273,8 @@ textarea:focus { outline: none; border-color: var(--accent); }
 .pcard { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; text-align: left; padding: 0; width: 100%; transition: border-color .15s, transform .15s; }
 .pcard:hover { border-color: var(--accent); transform: translateY(-1px); }
 .pcard .thumb { position: relative; aspect-ratio: 4 / 5; background: var(--media-bg); background-size: cover; background-position: center; }
-.pcard.story .thumb, .pcard.video .thumb { aspect-ratio: 9 / 14; }
+.pcard.story .thumb { aspect-ratio: 9 / 16; }
+.pcard.video .thumb { aspect-ratio: 9 / 14; }
 .pcard .thumb .tag { position: absolute; top: 9px; left: 9px; }
 .pcard .thumb .cnt { position: absolute; right: 9px; bottom: 9px; }
 .pcard .thumb .play { position: absolute; inset: 0; display: grid; place-items: center; }
@@ -473,13 +474,21 @@ function filesOf(p) {
   const isVid = catOf(p) === 'videos';
   const fromPortal = state.fields[p.id] && state.fields[p.id].arquivos;
   if (fromPortal != null && fromPortal !== '') return parseArquivos(fromPortal, isVid);
-  return (p.arquivos || []).filter(Boolean).map(a => typeof a === 'string' ? { id: a, tipo: isVid ? 'video' : 'imagem' } : a);
+  return (p.arquivos || []).filter(Boolean).map(a => {
+    if (typeof a !== 'string') return a;
+    // caminho de arquivo hospedado no próprio portal (ex.: assets/stories/...)
+    if (/[\/.]/.test(a)) return { url: a, tipo: /\.(mp4|mov|webm)$/i.test(a) ? 'video' : 'imagem' };
+    return { id: a, tipo: isVid ? 'video' : 'imagem' };
+  });
 }
 const imgUrl = (id, w) => 'https://lh3.googleusercontent.com/d/' + id + '=w' + (w || 1200);
 const vidThumb = id => 'https://drive.google.com/thumbnail?id=' + id + '&sz=w800';
 const vidEmbed = id => 'https://drive.google.com/file/d/' + id + '/preview';
 const dlUrl = id => 'https://drive.google.com/uc?export=download&id=' + id;
-const thumbOf = f => f.tipo === 'video' ? vidThumb(f.id) : imgUrl(f.id, 600);
+const thumbOf = f => f.url ? f.url : f.tipo === 'video' ? vidThumb(f.id) : imgUrl(f.id, 600);
+const srcOf = f => f.url ? f.url : imgUrl(f.id, 1600);
+const dlOf = f => f.url ? f.url : dlUrl(f.id);
+const dlAttr = f => f.url ? ' download' : ' target="_blank" rel="noopener"';
 
 /* ---------------- state ---------------- */
 const state = { status: {}, comments: {}, fields: {} };
@@ -769,7 +778,7 @@ function postCard(p) {
   const last = (state.comments[p.id] || []).slice(-1)[0];
   const thumb = f
     ? '<div class="thumb" style="background-image:url(\'' + thumbOf(f) + '\')">' + (f.tipo === 'video' ? '<div class="play"><i>▶</i></div>' : '') +
-      '<span class="tag">' + esc(p.formato) + '</span>' + (fs.length > 1 ? '<span class="tag cnt">' + fs.length + ' imagens</span>' : '') + '</div>'
+      '<span class="tag">' + esc(p.formato) + '</span>' + (fs.length > 1 ? '<span class="tag cnt">' + fs.length + (cat === 'stories' ? ' telas' : ' imagens') + '</span>' : '') + '</div>'
     : '<div class="thumb"><div class="noart"><div><b>' + (cat === 'videos' ? 'Aguardando gravação' : 'Arte em produção') + '</b>' + (cat === 'videos' ? 'Roteiro disponível para revisão' : 'O briefing já está no post') + '</div></div><span class="tag">' + esc(p.formato) + '</span></div>';
   return '<button class="pcard ' + (cat === 'stories' ? 'story' : cat === 'videos' ? 'video' : '') + '" data-action="open" data-id="' + esc(p.id) + '">' + thumb +
     '<div class="info"><span class="d">' + ddmm(p.data) + ' · ' + WD[parseDate(p.data).wd] + '</span><span class="t">' + esc(getField(p, 'tema')) + '</span>' +
@@ -802,7 +811,7 @@ function renderModal() {
     media = '<div class="noart"><b>' + (isVid ? 'Vídeo ainda não gravado' : 'Arte em produção') + '</b>' + (isVid ? 'Revise o roteiro ao lado. Quando o vídeo final chegar, ele aparece aqui.' : 'Quando a arte estiver pronta, ela aparece aqui para aprovação.') + '</div>';
   } else {
     const i = Math.min(ui.slide, fs.length - 1), f = fs[i];
-    media = (f.tipo === 'video' ? '<iframe src="' + vidEmbed(f.id) + '" allow="autoplay; fullscreen" allowfullscreen title="Vídeo"></iframe>' : '<img src="' + imgUrl(f.id, 1600) + '" alt="Slide ' + (i + 1) + '" onerror="this.outerHTML=\'<div class=&quot;broken&quot;><b>Não consegui abrir esta imagem</b>Confira se o arquivo no Drive está compartilhado como “Qualquer pessoa com o link”.</div>\'">') +
+    media = (f.tipo === 'video' ? (f.url ? '<video src="' + esc(f.url) + '" controls playsinline style="width:100%;max-height:calc(100vh - 120px)"></video>' : '<iframe src="' + vidEmbed(f.id) + '" allow="autoplay; fullscreen" allowfullscreen title="Vídeo"></iframe>') : '<img src="' + esc(srcOf(f)) + '" alt="Slide ' + (i + 1) + '" onerror="this.outerHTML=\'<div class=&quot;broken&quot;><b>Não consegui abrir esta imagem</b>Confira se o arquivo no Drive está compartilhado como “Qualquer pessoa com o link”.</div>\'">') +
       (fs.length > 1 ? '<button class="nav-arrow prev" data-action="slide" data-dir="-1" aria-label="Anterior">‹</button><button class="nav-arrow next" data-action="slide" data-dir="1" aria-label="Próximo">›</button><span class="tag counter">' + (i + 1) + ' / ' + fs.length + '</span>' : '');
   }
   const siblings = ui.modalPosts && ui.modalPosts.length > 1
@@ -814,8 +823,8 @@ function renderModal() {
     siblings + chipsFor(p) +
     '<div class="field"><div class="field-label">Status do criativo</div>' + statusButtons(p.id, stCriativo(p)) +
     '<div style="font-size:12px;color:var(--faint)">Pauta: ' + stPill(stPauta(p)) + '</div></div>' +
-    (fs.length ? '<div class="downloads">' + (fs.length === 1 ? '<a class="btn sm" href="' + dlUrl(fs[0].id) + '" target="_blank" rel="noopener">⇩ Baixar ' + (fs[0].tipo === 'video' ? 'vídeo' : 'imagem') + '</a>'
-      : fs.map((f, i) => '<a class="btn sm" href="' + dlUrl(f.id) + '" target="_blank" rel="noopener">⇩ ' + (i + 1) + '</a>').join('')) + '</div>' : '') +
+    (fs.length ? '<div class="downloads">' + (fs.length === 1 ? '<a class="btn sm" href="' + esc(dlOf(fs[0])) + '"' + dlAttr(fs[0]) + '>⇩ Baixar ' + (fs[0].tipo === 'video' ? 'vídeo' : 'imagem') + '</a>'
+      : fs.map((f, i) => '<a class="btn sm" href="' + esc(dlOf(f)) + '"' + dlAttr(f) + '>⇩ ' + (i + 1) + '</a>').join('')) + '</div>' : '') +
     (DESIGN ? arteBox(p) : '') +
     '<div class="divider"></div>' +
     fieldBox(p, 'objetivo', 'Objetivo', { readonly: true }) +

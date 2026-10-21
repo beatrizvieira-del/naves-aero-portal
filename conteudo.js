@@ -135,5 +135,61 @@ window.PORTAL_POSTS = [
     copy: '',
     legenda: 'Precisão, disciplina e foco: o que vale dentro do campo vale para o caminho até ele. Você cuida do jogo. A gente cuida da chegada.\n\nQual é o seu esporte?',
     arquivos: []
+  },
+
+  /* ---------- STORIES ---------- */
+  {
+    id: "story-pacotes", data: "2026-10-22", formato: 'Story', redes: ['Instagram'], statusPauta: 'aprovado',
+    tema: "Pacotes de horas",
+    objetivo: "Apresentar os pacotes de horas da Naves e quando vale a pena escolher pacote ou voo avulso.",
+    direcionamento: "Sequência de 5 telas 9:16. Arte entregue pela equipe de design.\nPendência: Confirmar com a Naves os nomes, as horas e os benefícios dos pacotes antes de publicar.",
+    copy: "1. Seu tempo, sua rota. O pacote de horas reserva voos para a sua agenda, com a Naves pronta quando o compromisso pedir.\n2. Três tamanhos: Latitude (10 horas de voo), Longitude (25 horas), Altitude (50 horas).\n3. O que vem junto: validade de 12 meses, prioridade de agendamento, gerente de conta dedicado, relatório mensal de uso.\n4. Pacote ou avulso? Pacote: para quem voa com frequência e quer a agenda sempre garantida. Avulso: para o voo pontual.\n5. Tela final: \"Conecte o que importa.\" Fale com a equipe Naves pelo WhatsApp e planeje o seu próximo voo. Toque no link abaixo.",
+    legenda: '', roteiro: '',
+    arquivos: ["assets/stories/01_pacotes_01.png", "assets/stories/01_pacotes_02.png", "assets/stories/01_pacotes_03.png", "assets/stories/01_pacotes_04.png", "assets/stories/01_pacotes_05.png"]
+  },
+  {
+    id: "story-phenom-100", data: "2026-10-27", formato: 'Story', redes: ['Instagram'], statusPauta: 'aprovado',
+    tema: "Phenom 100 em detalhes",
+    objetivo: "Reforçar nos Stories o post do Phenom 100 (26/10): números, cabine e serviço de bordo.",
+    direcionamento: "Sequência de 5 telas 9:16. Arte entregue pela equipe de design.\nPendência: Atenção: os números da tela 3 (700 km/h e 3h30) não batem com a legenda do post de 26/10 (650 km/h e 2.100 km). Alinhar uma única fonte antes de publicar.",
+    copy: "1. Phenom 100: o jato executivo da Embraer, pronto para a sua agenda.\n2. Cabine para 4 passageiros: conforto e privacidade para trabalhar, conversar ou descansar.\n3. Em números: 700 km/h de velocidade de cruzeiro, 3h30 de autonomia, 41 mil pés de altitude máxima.\n4. Catering a bordo: um serviço de bordo pensado para cada viagem.\n5. Tela final: \"Conecte o que importa.\" Fale com a equipe Naves pelo WhatsApp e planeje o seu próximo voo. Toque no link abaixo.",
+    legenda: '', roteiro: '',
+    arquivos: ["assets/stories/04_phenom_100_01.png", "assets/stories/04_phenom_100_02.png", "assets/stories/04_phenom_100_03.png", "assets/stories/04_phenom_100_04.png", "assets/stories/04_phenom_100_05.png"]
+  },
+  {
+    id: "story-empty-legs", data: "2026-10-29", formato: 'Story', redes: ['Instagram'], statusPauta: 'aprovado',
+    tema: "Empty legs: o trecho que vira oportunidade",
+    objetivo: "Explicar o que é empty leg e levar o público a entrar no canal de trechos disponíveis.",
+    direcionamento: "Sequência de 5 telas 9:16. Arte entregue pela equipe de design.\nPendência: Confirmar o link do canal de empty legs.",
+    copy: "1. O trecho que vira oportunidade: quando a aeronave precisa voltar ou mudar de base, o trecho fica disponível para você voar.\n2. Como funciona o canal: entre no canal de trechos disponíveis; receba as oportunidades com rota, data e horário; garanta o seu voo pelo WhatsApp.\n3. Como é um trecho (exemplo ilustrativo): UDI → GRU, 14 nov, 10h, até 4 passageiros, Phenom 100.\n4. Entre no canal: receba os próximos trechos assim que forem publicados. Toque no link abaixo.\n5. Tela final: \"Conecte o que importa.\" Fale com a equipe Naves pelo WhatsApp e planeje o seu próximo voo. Toque no link abaixo.",
+    legenda: '', roteiro: '',
+    arquivos: ["assets/stories/02_empty_legs_01.png", "assets/stories/02_empty_legs_02.png", "assets/stories/02_empty_legs_03.png", "assets/stories/02_empty_legs_04.png", "assets/stories/02_empty_legs_05.png"]
+  },
+  {
+    id: "story-seguranca", data: "2026-11-03", formato: 'Story', redes: ['Instagram'], statusPauta: 'aprovado',
+    tema: "Segurança: o que acontece antes do voo",
+    objetivo: "Preparar o público para o post de Segurança (04/11), mostrando certificação, tripulação, manutenção e equipe.",
+    direcionamento: "Sequência de 6 telas 9:16. Arte entregue pela equipe de design.\nPendência: Confirmar a certificação RBAC 135 (o post de 04/11 ainda tem esse dado em aberto) e a certificação Great Place to Work.",
+    copy: "1. Homologação ANAC: operação certificada no RBAC 135, o regulamento do táxi-aéreo no Brasil.\n2. Experiência em cada comando: tripulação qualificada, com a mesma atenção do embarque ao pouso.\n3. Preservar é cuidar: manutenção preventiva programada e inspeção da aeronave a cada partida.\n4. Treinamento constante: treinamento técnico e de segurança, reciclagem periódica, protocolos revisados a cada voo.\n5. Um ótimo lugar para trabalhar: a Naves Aero é certificada pelo Great Place to Work.\n6. Tela final: \"Conecte o que importa.\" Fale com a equipe Naves pelo WhatsApp e planeje o seu próximo voo. Toque no link abaixo.",
+    legenda: '', roteiro: '',
+    arquivos: ["assets/stories/03_seguranca_01.png", "assets/stories/03_seguranca_02.png", "assets/stories/03_seguranca_03.png", "assets/stories/03_seguranca_04.png", "assets/stories/03_seguranca_05.png", "assets/stories/03_seguranca_06.png"]
+  },
+  {
+    id: "story-destinos", data: "2026-11-05", formato: 'Story', redes: ['Instagram'], statusPauta: 'aprovado',
+    tema: "Destinos a partir de Uberlândia e São Paulo",
+    objetivo: "Antecipar o post \"Fim de semana em outro destino\" (06/11) com destinos que ficam a um voo.",
+    direcionamento: "Sequência de 5 telas 9:16. Arte entregue pela equipe de design.",
+    copy: "1. Rotas a partir de Uberlândia e São Paulo: do interior ao litoral, para todo o Brasil e a América do Sul.\n2. Inhotim (Brumadinho, MG).\n3. Punta del Este (Uruguai).\n4. Litoral do Nordeste (Bahia, Alagoas, Pernambuco e outros estados).\n5. Tela final: \"Conecte o que importa.\" Fale com a equipe Naves pelo WhatsApp e planeje o seu próximo voo. Toque no link abaixo.",
+    legenda: '', roteiro: '',
+    arquivos: ["assets/stories/05_destinos_01.png", "assets/stories/05_destinos_02.png", "assets/stories/05_destinos_03.png", "assets/stories/05_destinos_04.png", "assets/stories/05_destinos_05.png"]
+  },
+  {
+    id: "story-bastidores", data: "2026-11-10", formato: 'Story', redes: ['Instagram'], statusPauta: 'aprovado',
+    tema: "Bastidores do voo",
+    objetivo: "Mostrar o preparo antes da decolagem: aeronave, checklist, embarque e pista.",
+    direcionamento: "Sequência de 5 telas 9:16. Arte entregue pela equipe de design.",
+    copy: "1. Preparo da aeronave: antes de cada voo, a aeronave é preparada com cuidado, por dentro e por fora.\n2. Checklist da tripulação: cada sistema conferido antes da partida.\n3. Embarque: do carro à escada da aeronave, sem filas.\n4. Pista livre: decolagem no horário da sua agenda.\n5. Tela final: \"Conecte o que importa.\" Fale com a equipe Naves pelo WhatsApp e planeje o seu próximo voo. Toque no link abaixo.",
+    legenda: '', roteiro: '',
+    arquivos: ["assets/stories/06_bastidores_01.png", "assets/stories/06_bastidores_02.png", "assets/stories/06_bastidores_03.png", "assets/stories/06_bastidores_04.png", "assets/stories/06_bastidores_05.png"]
   }
 ];
