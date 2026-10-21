@@ -643,6 +643,15 @@ async function avisarDesigner(key, comentario) {
     return false;
   } catch (e) { return false; }
 }
+async function avisarArteNova(p, ajuste) {
+  if (DEMO) return;
+  const n = filesOf(p).length;
+  try {
+    const r = await rpc('avisar_arte_nova', { p_slug: SLUG, p_post_key: p.id, p_titulo: getField(p, 'tema'),
+      p_detalhe: (p.formato || 'Post') + ' · ' + ddmm(p.data), p_qtd: n, p_ajuste: !!ajuste });
+    if (r === 'ok') toast('Equipe avisada no Google Chat', 3500);
+  } catch (e) {}
+}
 async function aposMudarStatus(key, val) {
   if (DEMO || !AVISO_ST.includes(val)) return;
   const last = (state.comments[key] || []).slice(-1)[0];
@@ -1012,6 +1021,7 @@ document.addEventListener('click', async e => {
     const wrap = el.closest('[data-fieldwrap]'); const ta = wrap.querySelector('textarea');
     const p = postById(ta.dataset.id);
     el.disabled = true; el.textContent = 'Salvando…';
+    const tinhaArte = ta.dataset.field === 'arquivos' && filesOf(p).length > 0;
     if (ta.dataset.field === 'arquivos') {
       const lines = ta.value.split('\n').filter(l => l.trim());
       const n = parseArquivos(ta.value, false).length;
@@ -1024,6 +1034,7 @@ document.addEventListener('click', async e => {
       await saveStatus(p.id, 'aguardando');
       toast(ta.value.trim() ? 'Arte enviada para aprovação' : 'Arte removida');
       ui.slide = 0; renderModal(); renderNav();
+      if (ta.value.trim()) avisarArteNova(p, tinhaArte);
     } else if (ok) { ta.classList.remove('dirty'); wrap.querySelector('[data-saved]').style.visibility = 'visible'; toast('Texto salvo'); if (ta.dataset.field === 'tema') renderNav(); }
     else el.disabled = false;
   } else if (a === 'comment') {
