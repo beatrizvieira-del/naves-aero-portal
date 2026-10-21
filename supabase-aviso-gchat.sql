@@ -44,7 +44,7 @@ begin
   perform net.http_post(
     url := v_url,
     body := jsonb_build_object('text', v_msg),
-    headers := '{"Content-Type": "application/json; charset=UTF-8"}'::jsonb
+    headers := '{"Content-Type": "application/json"}'::jsonb
   );
   insert into aviso_log (client_slug, post_key) values (p_slug, p_post_key);
   return 'ok';
