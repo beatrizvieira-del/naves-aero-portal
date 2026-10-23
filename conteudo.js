@@ -13,6 +13,8 @@
                   A pasta precisa estar como "Qualquer pessoa com o link".
    Fonte de outubro/2026: doc "Naves_Aero_Pautas_Instagram" (15/10/2026).
    Cronograma definido em 20/10/2026: 3 posts por semana (seg, qua, sex).
+   Novembro completado em 23/10/2026 com a pré-pauta "Calendário de novembro · Naves Aero"
+   (ids nov-*, rede-linkedin-* e as stories de 12, 19 e 26/11), aguardando validação.
    Os IDs não dependem da data: pode mudar a data sem perder status e comentários.
    ========================================================= */
 window.PORTAL_POSTS = [
@@ -136,6 +138,138 @@ window.PORTAL_POSTS = [
     legenda: 'Precisão, disciplina e foco: o que vale dentro do campo vale para o caminho até ele. Você cuida do jogo. A gente cuida da chegada.\n\nQual é o seu esporte?',
     arquivos: []
   },
+  {
+    id: "nov-um-dia-no-hangar", data: "2026-11-20", formato: "Reels", editoria: "Bastidores", redes: ["Instagram"], statusPauta: 'aguardando',
+    tema: "Um dia no hangar",
+    objetivo: "Mostrar o cuidado que ninguém vê antes de cada rota: preparação, manutenção e preservação do PR-UUT. Aprofunda a story de bastidores (10/11).",
+    direcionamento: "Reels 9:16 de 30 segundos, com cortes a cada 2 segundos para segurar a retenção.\nTrilha instrumental calma, sem narração. Texto na tela em sans branca, centralizado, fora dos 220 px do topo e dos 340 px da base.\nImagens (documento de captação): timelapse do hangar abrindo (H01), limpeza da fuselagem com o logo (H02), cabine sendo preparada (H03), abastecimento só se a operação autorizar (H04), aeronave saindo do hangar (H05) e cauda com o logo (F02).\nCapa do Reel: frame do H01 com o título \"Um dia no hangar\" em serifada, dentro do recorte central 3:4.\nNenhum rosto de cliente; equipe de solo só de longe ou pelas mãos.",
+    copy: "",
+    roteiro: "Texto na tela, cena a cena:\n0 a 3s · H01, hangar se abrindo com o PR-UUT dentro: \"Ninguém vê esta parte do voo.\"\n3 a 9s · H02, limpeza da fuselagem, detalhe no logo: \"Ela é a mais importante.\"\n9 a 15s · H03, cabine sendo preparada: \"Cabine preparada\"\n15 a 21s · H04, abastecimento em plano aberto: \"Tudo conferido\"\n21 a 27s · H05, aeronave saindo do hangar: \"Pronta para a sua rota.\"\n27 a 30s · F02, cauda com o logo: \"NAVES AERO · Conectando o que importa.\"",
+    legenda: "Ninguém vê esta parte do voo, e ela é a mais importante. Antes de cada rota, o PR-UUT passa por horas de preparação, por dentro e por fora.\n\nSiga a Naves e veja o que acontece antes de cada rota.\nNAVES AERO · Conectando o que importa.",
+    arquivos: []
+  },
+  {
+    id: "nov-prazer-naves", data: "2026-11-23", formato: "Carrossel", editoria: "Tempo que nos impulsiona (fixado 3)", redes: ["Instagram"], statusPauta: 'aguardando',
+    tema: "Prazer, Naves Aero",
+    objetivo: "Apresentar a Naves para quem chega ao perfil: origem em Uberlândia, o que fazemos, bases e equipe. Terceiro post fixado.",
+    direcionamento: "Carrossel 1080 x 1350, 6 slides, no padrão dos posts fixados: etiqueta laranja \"QUEM SOMOS\", título em serifada, texto curto em sans e logo no rodapé.\nNumeração \"02 / 06\" no canto superior direito a partir do slide 2.\nSlides com foto levam degradê escuro na base; o slide 3 é em fundo off-white #F4F3F1, com marcadores laranja.\nA capa precisa funcionar no recorte 3:4 do grid, porque o post fica fixado.\nImagens: fundador no hangar com o PR-UUT (F07), cabine (F04), retrato da tripulação (T05) e aeronave ao pôr do sol (F08).",
+    copy: "1. Capa (F07, plano aberto): \"Prazer, Naves Aero.\" Apoio: Táxi aéreo de Uberlândia para todo o Brasil.\n2. F07, plano fechado no fundador: \"Por que Uberlândia.\" Apoio: frase do fundador sobre a origem da Naves, nas palavras dele e aprovada por ele.\n3. Fundo off-white: \"O que fazemos.\" Táxi aéreo executivo · RBAC 135 / Pacote de horas / Gestão de aeronaves.\n4. F04, cabine: \"Bases em Uberlândia e São Paulo.\" Apoio: Para onde a sua agenda pedir.\n5. T05, tripulação: \"Quem cuida do seu voo.\" Apoio: nome e função de cada tripulante.\n6. CTA (F08, pôr do sol): \"Seu tempo volta a ser seu.\" Botão: Fale com a Naves pelo WhatsApp.",
+    roteiro: "",
+    legenda: "A Naves Aero nasceu em Uberlândia para devolver tempo a quem não tem tempo a perder. Táxi aéreo homologado RBAC 135, pacote de horas e gestão de aeronaves, com bases em Uberlândia e São Paulo.\n\nFale com a Naves pelo WhatsApp da bio.\nNAVES AERO · Conectando o que importa.",
+    arquivos: []
+  },
+  {
+    id: "nov-seu-tempo-sua-rota", data: "2026-11-25", formato: "Carrossel", editoria: "Expert informal (fixado 2)", redes: ["Instagram"], statusPauta: 'aguardando',
+    tema: "Seu tempo, sua rota",
+    objetivo: "Apresentar o pacote de horas pelo valor do tempo, sem preço. Segundo post fixado.",
+    direcionamento: "Carrossel 1080 x 1350, 7 slides, no padrão dos posts fixados: etiqueta laranja \"PACOTE DE HORAS\", título em serifada e texto curto em sans.\nSlides 3 e 7 em fundo off-white #F4F3F1; os demais com foto e degradê escuro na base.\nNenhum preço, valor por hora ou comparação de custo em nenhum slide.\nSlide 7 com botão preto \"Fale com a Naves pelo WhatsApp\".\nImagens: PR-UUT ao pôr do sol (F01), cabine vazia (F04), escada aberta (I04), frente na linha central (F03) e caminhada até a aeronave (E03).\nDepois de publicar, fixar os três posts na ordem 3, 2 e 1, para a Segurança (04/11) ficar à esquerda no grid.",
+    copy: "1. Capa (F01, PR-UUT ao pôr do sol): \"Seu tempo, sua rota.\" Apoio: Pacote de horas Naves Aero.\n2. F04, cabine vazia: \"O que não se compra de volta.\" Apoio: Tempo. Por isso, ele está no centro de cada pacote.\n3. Fundo off-white: \"Horas reservadas para o que importa.\" Latitude · 10 horas / Longitude · 25 horas / Altitude · 50 horas / Validade de 12 meses.\n4. I04, escada aberta: \"A agenda é sua.\" Apoio: Prioridade de agendamento: a aeronave pronta quando o compromisso pedir.\n5. F03, frente na linha central: \"A rota também.\" Apoio: Da reunião ao fim de semana, você escolhe para onde.\n6. E03, caminhada até a aeronave: \"Menos estrada, mais presença.\" Apoio: O tempo que a viagem levaria volta para quem importa.\n7. CTA (fundo off-white): \"Conectando o que importa.\" Prioridade na sua agenda / Gerente de conta dedicado / Relatório mensal de uso. Botão: Fale com a Naves pelo WhatsApp.",
+    roteiro: "",
+    legenda: "Seu tempo é o que tem mais valor. O pacote de horas da Naves Aero reserva horas de voo para a sua agenda, em três tamanhos (Latitude, Longitude e Altitude), com validade de 12 meses, prioridade de agendamento e um gerente de conta dedicado.\n\nSua rota, no seu horário. Fale com a Naves pelo WhatsApp da bio.\nNAVES AERO · Conectando o que importa.",
+    arquivos: []
+  },
+  {
+    id: "nov-trechos-dezembro", data: "2026-11-27", formato: "Carrossel", editoria: "Oportunidades", redes: ["Instagram"], statusPauta: 'aguardando',
+    tema: "Trechos disponíveis de dezembro",
+    objetivo: "Levar o público ao canal de trechos disponíveis com as rotas reais de dezembro, sem falar de valor.",
+    direcionamento: "Carrossel 1080 x 1350, 3 slides, etiqueta laranja \"TRECHOS DISPONÍVEIS\".\nSlide 2 no modelo do cartão de trecho dos stories de Empty legs: rota em serifada grande (ex.: UDI → GRU), cidades em sans abaixo e grade com Data, Saída, Passageiros e Aeronave. Sem campo de valor.\nAté 3 cartões no slide 2. Se houver mais trechos, um slide extra antes do CTA.\nImagens: cauda com o logo (F02) na capa e frente na linha central (F03) no CTA.\nPendência: trechos reais enviados pela operação até 24/11 e link do canal (a mesma pendência da story de 29/10).",
+    copy: "1. Capa (F02, cauda com o logo): \"Dezembro já tem trechos esperando por você.\" Apoio: Rotas abertas para o fim de ano.\n2. Cartões de trecho em fundo preto: \"Trechos disponíveis.\" [ROTA] · [DATA] · [HORÁRIO] · até 4 passageiros · Phenom 100.\n3. CTA (F03, frente na linha central): \"Entre no canal.\" Apoio: Toque no link da bio e receba os próximos trechos.",
+    roteiro: "",
+    legenda: "Quando a aeronave precisa voltar ou mudar de base, o trecho fica disponível para você voar. Dezembro já tem rotas abertas.\n\nToque no link da bio e entre no canal de trechos.\nNAVES AERO · Conectando o que importa.",
+    arquivos: []
+  },
+  {
+    id: "nov-dezembro-em-rota", data: "2026-11-30", formato: "Carrossel", editoria: "Agenda Naves", redes: ["Instagram"], statusPauta: 'aguardando',
+    tema: "Dezembro em rota",
+    objetivo: "Abrir o planejamento de dezembro: antecipar as viagens de fim de ano e garantir as datas mais procuradas.",
+    direcionamento: "Carrossel 1080 x 1350, 5 slides, etiqueta laranja \"AGENDA NAVES\".\nSlide 2 em fundo preto com um calendário minimalista de dezembro, com 24, 25 e 31 destacados em laranja.\nSlide 4 em fundo off-white #F4F3F1; slide 5 com botão \"Fale com a Naves pelo WhatsApp\".\nImagens: PR-UUT ao pôr do sol (F08) na capa, cabine (F04) no slide 3 e PR-UUT de três quartos (F01) no CTA.",
+    copy: "1. Capa (F08, pôr do sol): \"Dezembro passa rápido. Sua rota não precisa esperar.\" Apoio: Deslize.\n2. Fundo preto com calendário: \"As datas mais procuradas.\" Apoio: 24, 25 e 31 de dezembro, e os dias antes do recesso.\n3. F04, cabine: \"Antecipar é escolher.\" Apoio: Quem define a agenda agora escolhe o horário e o destino.\n4. Fundo off-white: \"Como reservar.\" Apoio: Diga para onde, quando e quantos passageiros. A equipe Naves cuida do resto.\n5. CTA (F01, três quartos): \"Sua rota de fim de ano.\" Botão: Fale com a Naves pelo WhatsApp.",
+    roteiro: "",
+    legenda: "Dezembro passa rápido, e as melhores datas são as primeiras a fechar. Planeje agora as viagens de fim de ano e garanta a sua rota para as festas e o réveillon.\n\nFale com a Naves e garanta sua agenda de dezembro.\nNAVES AERO · Conectando o que importa.",
+    arquivos: []
+  },
+
+  /* ---------- LINKEDIN ---------- */
+  {
+    id: "rede-linkedin-1104-seguranca-em-primeiro-lugar", data: "2026-11-04", formato: "Carrossel", editoria: "LinkedIn · Página", redes: ["LinkedIn"], statusPauta: 'aguardando',
+    tema: "Segurança em primeiro lugar",
+    objetivo: "Adaptar o carrossel de Segurança (04/11) para a página da Naves no LinkedIn: o cuidado antes de cada voo, com tom de negócio.",
+    direcionamento: "Post na página da Naves Aero no LinkedIn, reaproveitando as artes do carrossel do Instagram do mesmo tema, no formato documento (PDF).\nTom sóbrio, de negócio, sem preço ou valores. Texto final escrito depois da validação da pauta.",
+    copy: "",
+    roteiro: "",
+    legenda: "[a definir depois da validação da pauta]",
+    arquivos: []
+  },
+  {
+    id: "rede-linkedin-1106-por-que-uberlandia", data: "2026-11-06", formato: "Estático", editoria: "LinkedIn · Fundador", redes: ["LinkedIn"], statusPauta: 'aguardando',
+    tema: "Por que Uberlândia",
+    objetivo: "A origem da Naves contada pelo fundador, em primeira pessoa.",
+    direcionamento: "Post no perfil pessoal do fundador: texto em primeira pessoa, com uma foto real dele com o PR-UUT ou no hangar.\nTom sóbrio, de negócio, sem preço ou valores. Texto final escrito depois da validação da pauta.",
+    copy: "",
+    roteiro: "",
+    legenda: "[a definir depois da validação da pauta]",
+    arquivos: []
+  },
+  {
+    id: "rede-linkedin-1111-quanto-tempo-voce-perde", data: "2026-11-11", formato: "Carrossel", editoria: "LinkedIn · Página", redes: ["LinkedIn"], statusPauta: 'aguardando',
+    tema: "Quanto tempo você perde para chegar",
+    objetivo: "A conta do tempo porta a porta, adaptada do carrossel de 11/11 para empresas.",
+    direcionamento: "Post na página da Naves Aero no LinkedIn, reaproveitando as artes do carrossel do Instagram do mesmo tema, no formato documento (PDF).\nTom sóbrio, de negócio, sem preço ou valores. Texto final escrito depois da validação da pauta.",
+    copy: "",
+    roteiro: "",
+    legenda: "[a definir depois da validação da pauta]",
+    arquivos: []
+  },
+  {
+    id: "rede-linkedin-1113-o-custo-invisivel-do", data: "2026-11-13", formato: "Estático", editoria: "LinkedIn · Fundador", redes: ["LinkedIn"], statusPauta: 'aguardando',
+    tema: "O custo invisível do tempo de deslocamento de um executivo",
+    objetivo: "Artigo curto do fundador sobre o tempo que o deslocamento tira da agenda de quem decide.",
+    direcionamento: "Post no perfil pessoal do fundador: texto em primeira pessoa, com uma foto real dele com o PR-UUT ou no hangar.\nTom sóbrio, de negócio, sem preço ou valores. Texto final escrito depois da validação da pauta.",
+    copy: "",
+    roteiro: "",
+    legenda: "[a definir depois da validação da pauta]",
+    arquivos: []
+  },
+  {
+    id: "rede-linkedin-1116-do-pedido-ao-embarque", data: "2026-11-16", formato: "Carrossel", editoria: "LinkedIn · Página", redes: ["LinkedIn"], statusPauta: 'aguardando',
+    tema: "Do pedido ao embarque, em 4 passos",
+    objetivo: "Adaptar o carrossel de 16/11 para quem organiza a agenda de executivos.",
+    direcionamento: "Post na página da Naves Aero no LinkedIn, reaproveitando as artes do carrossel do Instagram do mesmo tema, no formato documento (PDF).\nTom sóbrio, de negócio, sem preço ou valores. Texto final escrito depois da validação da pauta.",
+    copy: "",
+    roteiro: "",
+    legenda: "[a definir depois da validação da pauta]",
+    arquivos: []
+  },
+  {
+    id: "rede-linkedin-1120-o-que-aprendi-liderando", data: "2026-11-20", formato: "Estático", editoria: "LinkedIn · Fundador", redes: ["LinkedIn"], statusPauta: 'aguardando',
+    tema: "O que aprendi liderando uma operação em que não existe margem para erro",
+    objetivo: "Reflexão do fundador sobre cuidado, preparo e confiança na operação.",
+    direcionamento: "Post no perfil pessoal do fundador: texto em primeira pessoa, com uma foto real dele com o PR-UUT ou no hangar.\nTom sóbrio, de negócio, sem preço ou valores. Texto final escrito depois da validação da pauta.",
+    copy: "",
+    roteiro: "",
+    legenda: "[a definir depois da validação da pauta]",
+    arquivos: []
+  },
+  {
+    id: "rede-linkedin-1125-pacote-de-horas-para", data: "2026-11-25", formato: "Carrossel", editoria: "LinkedIn · Página", redes: ["LinkedIn"], statusPauta: 'aguardando',
+    tema: "Pacote de horas para empresas",
+    objetivo: "Previsibilidade de agenda para diretoria e conselhos, adaptado do carrossel de 25/11. Sem preço.",
+    direcionamento: "Post na página da Naves Aero no LinkedIn, reaproveitando as artes do carrossel do Instagram do mesmo tema, no formato documento (PDF).\nTom sóbrio, de negócio, sem preço ou valores. Texto final escrito depois da validação da pauta.",
+    copy: "",
+    roteiro: "",
+    legenda: "[a definir depois da validação da pauta]",
+    arquivos: []
+  },
+  {
+    id: "rede-linkedin-1127-o-que-o-cliente", data: "2026-11-27", formato: "Estático", editoria: "LinkedIn · Fundador", redes: ["LinkedIn"], statusPauta: 'aguardando',
+    tema: "O que o cliente executivo valoriza além do voo",
+    objetivo: "O fundador fala sobre o que vem antes e depois do voo: atendimento, discrição e tempo.",
+    direcionamento: "Post no perfil pessoal do fundador: texto em primeira pessoa, com uma foto real dele com o PR-UUT ou no hangar.\nTom sóbrio, de negócio, sem preço ou valores. Texto final escrito depois da validação da pauta.",
+    copy: "",
+    roteiro: "",
+    legenda: "[a definir depois da validação da pauta]",
+    arquivos: []
+  },
 
   /* ---------- STORIES ---------- */
   {
@@ -190,6 +324,36 @@ window.PORTAL_POSTS = [
     direcionamento: "Sequência de 5 telas 9:16. Arte em alteração pela equipe de design.",
     copy: "1. Preparo da aeronave: antes de cada voo, a aeronave é preparada com cuidado, por dentro e por fora.\n2. Checklist da tripulação: cada sistema conferido antes da partida.\n3. Embarque: do carro à escada da aeronave, sem filas.\n4. Pista livre: decolagem no horário da sua agenda.\n5. Tela final: \"Conecte o que importa.\" Fale com a equipe Naves pelo WhatsApp e planeje o seu próximo voo. Toque no link abaixo.",
     legenda: '', roteiro: '',
+    arquivos: []
+  },
+  {
+    id: "story-pergunta-comandante", data: "2026-11-12", formato: "Story", editoria: "Interação", redes: ["Instagram"], statusPauta: 'aguardando',
+    tema: "O que você perguntaria ao nosso comandante?",
+    objetivo: "Gerar interação e preparar o Reel \"Quem está no comando\" (13/11): as melhores perguntas podem entrar no vídeo.",
+    direcionamento: "Sequência de 2 telas 9:16, com fotos reais do PR-UUT e da tripulação (cenas T01 a T05 da captação), no tratamento de fim de tarde aprovado.\nTela 2 com a caixa de perguntas do Instagram.\nPendência: aceite de uso de imagem do comandante (o mesmo do Reel de 13/11).",
+    copy: "1. Amanhã, você conhece quem está no comando dos voos da Naves.\n2. Caixa de perguntas: \"O que você perguntaria ao nosso comandante?\"",
+    roteiro: "",
+    legenda: "",
+    arquivos: []
+  },
+  {
+    id: "story-enquete-feriado", data: "2026-11-19", formato: "Story", editoria: "Interação", redes: ["Instagram"], statusPauta: 'aguardando',
+    tema: "Praia ou serra no feriado?",
+    objetivo: "Gerar interação na véspera do feriado de 20/11 e entender os destinos que o público prefere.",
+    direcionamento: "Sequência de 2 telas 9:16. Tela 1 com o PR-UUT ao pôr do sol; tela 2 com a enquete do Instagram.\nSem imagens de banco com outras aeronaves.",
+    copy: "1. Feriado chegando. Para onde vai a sua rota?\n2. Enquete: \"Praia ou serra no feriado?\" Opções: Praia / Serra.",
+    roteiro: "",
+    legenda: "",
+    arquivos: []
+  },
+  {
+    id: "story-canal-trechos", data: "2026-11-26", formato: "Story", editoria: "Oportunidades", redes: ["Instagram"], statusPauta: 'aguardando',
+    tema: "Entre no canal de trechos",
+    objetivo: "Preparar o post de trechos disponíveis de dezembro (27/11) e levar o público ao canal.",
+    direcionamento: "Sequência de 3 telas 9:16, no modelo do cartão de trecho dos stories de Empty legs (sem campo de valor).\nTela 2 com o adesivo de link para o canal.\nPendência: link do canal de trechos (a mesma pendência da story de 29/10).",
+    copy: "1. Amanhã: os trechos disponíveis de dezembro.\n2. Entre no canal e receba os trechos assim que forem publicados. Toque no link abaixo.\n3. Tela final: \"Conecte o que importa.\" Fale com a equipe Naves pelo WhatsApp e planeje o seu próximo voo. Toque no link abaixo.",
+    roteiro: "",
+    legenda: "",
     arquivos: []
   }
 ];
