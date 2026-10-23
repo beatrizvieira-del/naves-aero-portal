@@ -33,6 +33,7 @@
   --st-aprovado: #35B57A;
   --st-agendado: #5B9BFF;
   --st-reprovado: #EF5A5F;
+  --st-concluido: #A78BFA;
   --media-bg: #05070A;
   color-scheme: dark;
 }
@@ -57,6 +58,7 @@
   --st-aprovado: #1E9A62;
   --st-agendado: #2F76E0;
   --st-reprovado: #D9393F;
+  --st-concluido: #7656DB;
   --media-bg: #111418;
   color-scheme: light;
 }
@@ -155,6 +157,15 @@ h2 { font-size: 19px; margin: 0; font-weight: 800; letter-spacing: -.01em; }
 .legend { display: flex; gap: 14px; flex-wrap: wrap; margin: 0 0 14px; }
 .legend span { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); font-weight: 600; }
 .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; background: var(--st-aguardando); }
+.prog { margin: 4px 0 18px; display: grid; gap: 8px; }
+.prog-head { display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: .04em; }
+.prog-head b { color: var(--text); font-size: 13px; }
+.prog-bar { display: flex; height: 12px; border-radius: 99px; overflow: hidden; background: var(--surface-3); gap: 2px; }
+.prog-bar i { display: block; height: 100%; min-width: 4px; transition: width .3s; }
+.prog-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.prog-legend span { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); font-weight: 600; }
+.prog-legend b { color: var(--text); font-variant-numeric: tabular-nums; }
+.prog-legend em { font-style: normal; color: var(--faint); font-variant-numeric: tabular-nums; }
 .grid7 { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
 .wd { text-align: center; font-size: 11px; font-weight: 800; letter-spacing: .12em; color: var(--accent); padding-bottom: 4px; }
 .day {
@@ -265,6 +276,8 @@ textarea:focus { outline: none; border-color: var(--accent); }
 .link-btn.danger:hover, .link-btn.confirm { color: var(--st-reprovado); }
 .c-edit { display: grid; gap: 6px; margin-top: 4px; }
 .c-edit textarea { min-height: 64px; }
+.aprovador-tag { font-size: 12.5px; color: var(--muted); background: color-mix(in srgb, var(--st-aprovado) 12%, var(--surface)); border: 1px solid color-mix(in srgb, var(--st-aprovado) 35%, transparent); border-radius: 10px; padding: 8px 12px; }
+.aprovador-tag b { color: var(--text); }
 .no-comments { font-size: 13px; color: var(--faint); }
 .comment-form { display: grid; gap: 8px; }
 .comment-form input { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; font-size: 13.5px; }
@@ -435,6 +448,7 @@ const STATUS = [
   { k: 'ajustes', l: 'Em ajustes', c: 'var(--st-ajustes)' },
   { k: 'aprovado', l: 'Aprovado', c: 'var(--st-aprovado)' },
   { k: 'agendado', l: 'Agendado', c: 'var(--st-agendado)' },
+  { k: 'concluido', l: 'Concluído', c: 'var(--st-concluido)' },
   { k: 'reprovado', l: 'Não aprovado', c: 'var(--st-reprovado)' }
 ];
 const ST = Object.fromEntries(STATUS.map(s => [s.k, s]));
@@ -652,6 +666,36 @@ async function avisarArteNova(p, ajuste) {
     if (r === 'ok') toast('Equipe avisada no Google Chat', 3500);
   } catch (e) {}
 }
+/* ---------- aprovação por comentário (Ivaldo e Denny) ----------
+   Cada aprovador tem um link pessoal: ?aprovador=CÓDIGO. O código fica guardado neste
+   navegador; o nome vem do banco (o site não conhece a lista de códigos).
+   Comentário com a palavra "aprovado" (e sem "não aprovado") → status Aprovado + aviso no Chat. */
+(function () { let c = null; try { c = new URLSearchParams(location.search).get('aprovador'); } catch (e) {} if (c) lsSet('naves-aprovador', c); })();
+const APROVADOR_CODE = lsGet('naves-aprovador', '');
+let APROVADOR_NOME = '';
+async function carregarAprovador() {
+  if (DEMO || !APROVADOR_CODE) return;
+  try { const n = await rpc('quem_aprova', { p_codigo: APROVADOR_CODE }); if (n) { APROVADOR_NOME = n; lsSet('naves-nome', n); } } catch (e) {}
+}
+function ehAprovacao(texto) {
+  const t = texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  return /\baprovad[oa]s?\b/.test(t) && !/\bnao\s+(esta\s+|foi\s+|ficou\s+)?aprovad/.test(t);
+}
+async function tentarAprovar(key, comentario) {
+  if (DEMO || !APROVADOR_NOME || !ehAprovacao(comentario.texto)) return false;
+  const p = postOfKey(key); if (!p) return false;
+  try {
+    const r = await rpc('aprovar_por_comentario', { p_slug: SLUG, p_post_key: key, p_codigo: APROVADOR_CODE,
+      p_titulo: getField(p, 'tema'), p_detalhe: (p.formato || 'Post') + ' · ' + ddmm(p.data), p_comentario: comentario.texto });
+    if (typeof r === 'string' && r.startsWith('ok')) {
+      state.status[key] = 'aprovado';
+      toast('Post aprovado por ' + APROVADOR_NOME + ' · equipe avisada no Chat', 4000);
+      refreshAfterComment(); renderNav();
+      return true;
+    }
+  } catch (e) {}
+  return false;
+}
 async function aposMudarStatus(key, val) {
   if (DEMO || !AVISO_ST.includes(val)) return;
   const last = (state.comments[key] || []).slice(-1)[0];
@@ -703,7 +747,7 @@ function arteBox(p) {
 }
 function commentsBlock(key) {
   const list = state.comments[key] || [];
-  const nome = lsGet('naves-nome', '');
+  const nome = APROVADOR_NOME || lsGet('naves-nome', '');
   return '<div class="field"><div class="field-label">Comentários <em>' + list.length + '</em></div>' +
     '<div class="comments">' + (list.length ? list.map(c => {
       const d = c.ts ? new Date(c.ts).toLocaleDateString('pt-BR') : '';
@@ -713,7 +757,8 @@ function commentsBlock(key) {
         '</div><p>' + esc(c.texto) + '</p></div>';
     }).join('') : '<div class="no-comments">Nenhum comentário ainda.</div>') + '</div>' +
     '<div class="comment-form" data-cform="' + esc(key) + '">' +
-    '<input type="text" data-cname placeholder="Seu nome" value="' + esc(nome) + '" maxlength="40">' +
+    (APROVADOR_NOME ? '<div class="aprovador-tag">✓ Comentando como <b>' + esc(APROVADOR_NOME) + '</b> (aprovador). Escreva "aprovado" para aprovar este post.</div><input type="hidden" data-cname value="' + esc(nome) + '">'
+      : '<input type="text" data-cname placeholder="Seu nome" value="' + esc(nome) + '" maxlength="40">') +
     '<textarea data-ctext rows="2" placeholder="Escreva um comentário ou pedido de ajuste"></textarea>' +
     '<div class="field-actions"><span data-ccount>0 caracteres</span><button class="btn primary sm" data-action="comment">Enviar</button></div>' +
     '</div></div>';
@@ -772,6 +817,19 @@ function viewHome() {
     '</div>';
 }
 
+/* barra de progresso do mês: distribuição dos posts por status do criativo */
+function progressoMes(mp, count) {
+  const total = mp.length;
+  const itens = STATUS.map(s => ({ s, n: count(s.k) })).filter(x => x.s.k !== 'reprovado' || x.n > 0);
+  const pct = n => total ? Math.round(n / total * 100) : 0;
+  const feitos = count('concluido');
+  return '<div class="prog">' +
+    '<div class="prog-head"><span>Progresso do mês</span><b>' + pct(feitos) + '% concluído</b></div>' +
+    '<div class="prog-bar" role="img" aria-label="' + esc(itens.map(x => x.s.l + ' ' + pct(x.n) + '%').join(', ')) + '">' +
+    (total ? itens.filter(x => x.n).map(x => '<i style="width:' + (x.n / total * 100) + '%;background:' + x.s.c + '" title="' + esc(x.s.l + ': ' + x.n + ' (' + pct(x.n) + '%)') + '"></i>').join('') : '') + '</div>' +
+    '<div class="prog-legend">' + itens.map(x => '<span>' + dot(x.s.k) + esc(x.s.l) + ' <b>' + pct(x.n) + '%</b> <em>(' + x.n + ')</em></span>').join('') + '</div>' +
+    '</div>';
+}
 function viewCalendar() {
   const mp = postsOfMonth();
   const y = ui.month.y, m = ui.month.m;
@@ -804,8 +862,9 @@ function viewCalendar() {
     '<div class="stat"><b style="color:var(--st-ajustes)">' + count('ajustes') + '</b><span>Ajustes</span></div>' +
     '<div class="stat"><b style="color:var(--st-aprovado)">' + count('aprovado') + '</b><span>Aprovados</span></div>' +
     '<div class="stat"><b style="color:var(--st-agendado)">' + count('agendado') + '</b><span>Agendados</span></div>' +
+    '<div class="stat"><b style="color:var(--st-concluido)">' + count('concluido') + '</b><span>Concluídos</span></div>' +
     '</div></div>' +
-    '<div class="legend">' + STATUS.map(s => '<span>' + dot(s.k) + esc(s.l) + '</span>').join('') + '</div>' +
+    progressoMes(mp, count) +
     '<div class="grid7">' + cells + '</div>' +
     (mp.length ? '' : '<div class="empty-state">Nenhum post previsto para este mês.</div>') +
     '</section>';
@@ -1045,7 +1104,8 @@ document.addEventListener('click', async e => {
     if (autor) lsSet('naves-nome', autor);
     el.disabled = true;
     await addComment(form.dataset.cform, autor, texto);
-    aposComentar(form.dataset.cform, { autor, texto });
+    const aprovou = await tentarAprovar(form.dataset.cform, { autor, texto });
+    if (!aprovou) aposComentar(form.dataset.cform, { autor, texto });
     toast('Comentário enviado');
     if (ui.modalPost) {
       const keep = hasDirty($('#sheet'));
@@ -1145,7 +1205,7 @@ function abrirPostDoLink() {
     setTimeout(() => { const el = document.querySelector('[data-pauta="' + CSS.escape(p.id) + '"]'); if (el) el.scrollIntoView({ block: 'start' }); }, 50); }
   else { if (!location.hash || location.hash === '#/home') location.hash = '#/' + catOf(p); render(); openModal(p.id); }
 }
-sha256(MY_TOKEN).then(h => { MY_HASH = h; }).finally(() => loadAll().then(() => { render(); abrirPostDoLink(); }));
+sha256(MY_TOKEN).then(h => { MY_HASH = h; }).finally(() => Promise.all([loadAll(), carregarAprovador()]).then(() => { render(); abrirPostDoLink(); }));
 })();
 </script>
 </body>
