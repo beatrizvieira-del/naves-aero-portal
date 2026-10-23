@@ -7,6 +7,7 @@
      editoria     (opcional) editoria / território da marca
      redes        ['Instagram', 'LinkedIn', ...]
      tema, objetivo, direcionamento, copy, legenda, roteiro   (texto)
+     captacao     (Reels e Stories) direcionamento de captação para a tripulação
      statusPauta  (opcional) status inicial da pauta: 'aprovado', 'aguardando'...
      arquivos     IDs dos arquivos no Google Drive, na ordem dos slides.
                   O ID é o trecho entre /d/ e /view do link de compartilhamento.
@@ -113,9 +114,10 @@ window.PORTAL_POSTS = [
     tema: 'Quem está no comando',
     objetivo: 'Apresentar o comandante e humanizar a operação: quem conhece cada detalhe da aeronave.',
     direcionamento: 'Reels de entrevista curta (alternativa: carrossel com retrato).\nO comandante no cockpit e na aeronave, em retrato natural, sem pose de catálogo.',
-    roteiro: 'Perguntas na tela:\n1. "Há quanto tempo você voa?"\n2. "O que você confere antes de todo voo?"\n3. "Qual a rota mais bonita que você já fez?"\n4. Fechamento: "Comandante [Nome]. [X] horas de voo."',
+    roteiro: "Cena a cena (tempo · imagem · texto):\n0 a 3s · T01 · comandante vira o rosto para a câmera, aeronave desfocada atrás: Texto: \"Quem está no comando?\"\n3 a 10s · T02 · resposta 1, câmera na altura dos olhos: Pergunta na tela: \"Há quanto tempo você voa?\" + resposta do comandante\n10 a 18s · T02 · resposta 2, com inserts de I01 (volta externa) e I02 (mãos no painel): Pergunta na tela: \"O que você confere antes de todo voo?\" + resposta\n18 a 26s · T02 · resposta 3, com insert de F01 ou F08 (PR-UUT no fim de tarde): Pergunta na tela: \"Qual a rota mais bonita que você já fez?\" + resposta\n26 a 30s · T04 · tripulação caminhando até a aeronave, de costas: Texto: \"Comandante [Nome]. [X] horas de voo.\" + NAVES AERO · Conectando o que importa.",
     copy: '',
     legenda: 'Por trás de cada voo, existe alguém que conhece cada detalhe da aeronave. Conheça o comandante [Nome], que está com a Naves desde [ano].\n\nDeixe uma pergunta para o nosso comandante nos comentários.',
+    captacao: "• Cenas: T01, T02 (três respostas gravadas separadas), T04, I01 e I02, no bloco \"Tripulação e fundador\" da diária (11h às 12h30), na sombra do hangar ou da asa.\n• Quem filma faz a pergunta fora do quadro; o comandante responde olhando levemente ao lado da lente, em até 10 segundos por resposta, com as próprias palavras.\n• Áudio: lugar sem ruído de motor, microfone de lapela se houver. Gravar 10 segundos de som ambiente do pátio para a edição.\n• Vertical 9:16, 4K a 30 quadros, foco e exposição travados no rosto. Três takes de cada resposta.\n• Uniforme completo e alinhado; aeronave limpa e com o logo visível ao fundo.\n• Termo de uso de imagem do comandante e do segundo tripulante assinado antes de gravar.\nPendências: Nome do comandante, horas de voo e ano de entrada na Naves. Termo de uso de imagem assinado.",
     arquivos: []
   },
   {
@@ -133,9 +135,10 @@ window.PORTAL_POSTS = [
     tema: 'Chegar inteiro para o que importa',
     objetivo: 'Conectar a Naves ao público de esportes de alta performance (golfe, tênis): chegar descansado faz parte do jogo.',
     direcionamento: 'Reels.\nEquipamento de golfe ou tênis embarcando, chegada ao clube, o primeiro movimento do jogo.',
-    roteiro: 'Textos na tela:\n1. "Sábado, 7h. O torneio começa às 10h."\n2. "Sem estrada. Sem conexão."\n3. "Chegar descansado é parte do jogo."',
+    roteiro: "Cena a cena (tempo · imagem · texto):\n0 a 4s · E01 · carro chegando ao pátio na luz da manhã: \"Sábado, 7h. O torneio começa às 10h.\"\n4 a 8s · S01 · bolsa de golfe ou raqueteira passando para a mão do tripulante\n8 a 13s · E03 + I04 · caminhada até a aeronave com o equipamento, escada aberta\n13 a 18s · S02 · equipamento acomodado; cabine em ordem (F04): \"Sem estrada. Sem conexão.\"\n18 a 25s · S03 + S04 · chegada ao clube e o primeiro movimento do jogo, em câmera lenta: \"Chegar descansado é parte do jogo.\"\n25 a 30s · F02 · cauda com o logo: NAVES AERO · Conectando o que importa.",
     copy: '',
     legenda: 'Precisão, disciplina e foco: o que vale dentro do campo vale para o caminho até ele. Você cuida do jogo. A gente cuida da chegada.\n\nQual é o seu esporte?',
+    captacao: "• Cenas novas S01 a S04 (ver \"Cenas novas para a diária\"), além de E01, E03, I04 e F04 já previstas.\n• Luz da manhã, para combinar com o texto: gravar S01, S02, E01 e E03 entre 6h30 e 7h, antes do bloco do hangar.\n• S03 e S04 em um clube parceiro, com autorização do clube. A pessoa em cena é alguém da equipe ou um atleta convidado, sem rosto ou com termo de uso de imagem.\n• S04 em câmera lenta (120 quadros por segundo), plano fechado no movimento: swing de golfe ou saque de tênis.\n• Equipamento limpo e sem marcas em destaque. Nada de logotipos de outras empresas no quadro.\n• Vertical 9:16, 4K; gimbal nos planos em movimento. Três takes de cada cena.\nPendências: Definir o esporte (golfe ou tênis) e o clube parceiro. Equipamento e pessoa para as cenas S01 a S04.",
     arquivos: []
   },
   {
@@ -144,8 +147,9 @@ window.PORTAL_POSTS = [
     objetivo: "Mostrar o cuidado que ninguém vê antes de cada rota: preparação, manutenção e preservação do PR-UUT. Aprofunda a story de bastidores (10/11).",
     direcionamento: "Reels 9:16 de 30 segundos, com cortes a cada 2 segundos para segurar a retenção.\nTrilha instrumental calma, sem narração. Texto na tela em sans branca, centralizado, fora dos 220 px do topo e dos 340 px da base.\nImagens (documento de captação): timelapse do hangar abrindo (H01), limpeza da fuselagem com o logo (H02), cabine sendo preparada (H03), abastecimento só se a operação autorizar (H04), aeronave saindo do hangar (H05) e cauda com o logo (F02).\nCapa do Reel: frame do H01 com o título \"Um dia no hangar\" em serifada, dentro do recorte central 3:4.\nNenhum rosto de cliente; equipe de solo só de longe ou pelas mãos.",
     copy: "",
-    roteiro: "Texto na tela, cena a cena:\n0 a 3s · H01, hangar se abrindo com o PR-UUT dentro: \"Ninguém vê esta parte do voo.\"\n3 a 9s · H02, limpeza da fuselagem, detalhe no logo: \"Ela é a mais importante.\"\n9 a 15s · H03, cabine sendo preparada: \"Cabine preparada\"\n15 a 21s · H04, abastecimento em plano aberto: \"Tudo conferido\"\n21 a 27s · H05, aeronave saindo do hangar: \"Pronta para a sua rota.\"\n27 a 30s · F02, cauda com o logo: \"NAVES AERO · Conectando o que importa.\"",
+    roteiro: "Cena a cena (tempo · imagem · texto):\n0 a 3s · H01 · hangar se abrindo com o PR-UUT dentro: \"Ninguém vê esta parte do voo.\"\n3 a 9s · H02 · limpeza da fuselagem, detalhe no logo: \"Ela é a mais importante.\"\n9 a 15s · H03 · cabine sendo preparada: \"Cabine preparada\"\n15 a 21s · H04 · abastecimento, plano aberto: \"Tudo conferido\"\n21 a 27s · H05 · aeronave saindo do hangar: \"Pronta para a sua rota.\"\n27 a 30s · F02 · cauda com o logo: NAVES AERO · Conectando o que importa.",
     legenda: "Ninguém vê esta parte do voo, e ela é a mais importante. Antes de cada rota, o PR-UUT passa por horas de preparação, por dentro e por fora.\n\nSiga a Naves e veja o que acontece antes de cada rota.\nNAVES AERO · Conectando o que importa.",
+    captacao: "• Cenas H01 a H05 no bloco \"Hangar\" da diária (7h às 9h30), com a luz suave pela porta do hangar, e F02 no fim de tarde.\n• H01: timelapse de 10 minutos, tripé fixo no fundo do hangar, aeronave centralizada.\n• H02 e H03: câmera parada, só as mãos se movem. Detalhe do logo e da faixa laranja na limpeza.\n• H04 só com autorização da operação, a distância segura e sem interferir no abastecimento.\n• Nenhum rosto de cliente; equipe de solo só de longe ou pelas mãos.\n• Vertical 9:16, 4K a 30 quadros; planos de pelo menos 10 segundos para os cortes de 2 segundos da edição.\nPendências: Autorização da operação para filmar o abastecimento (H04). Sem ela, trocar por um segundo plano de H03.",
     arquivos: []
   },
   {
@@ -288,6 +292,7 @@ window.PORTAL_POSTS = [
     direcionamento: "Sequência de 5 telas 9:16. Arte em alteração pela equipe de design.\nPendência: Atenção: os números da tela 3 (700 km/h e 3h30) não batem com a legenda do post de 26/10 (650 km/h e 2.100 km). Alinhar uma única fonte antes de publicar.",
     copy: "1. Phenom 100: o jato executivo da Embraer, pronto para a sua agenda.\n2. Cabine para 4 passageiros: conforto e privacidade para trabalhar, conversar ou descansar.\n3. Em números: 700 km/h de velocidade de cruzeiro, 3h30 de autonomia, 41 mil pés de altitude máxima.\n4. Catering a bordo: um serviço de bordo pensado para cada viagem.\n5. Tela final: \"Conecte o que importa.\" Fale com a equipe Naves pelo WhatsApp e planeje o seu próximo voo. Toque no link abaixo.",
     legenda: '', roteiro: '',
+    captacao: "Imagem de cada tela:\n1. PR-UUT de três quartos (foto real já tratada)\n2. Cabine (foto real já tratada)\n3. Frente da aeronave (foto real já tratada)\n4. Detalhe da cabine com o serviço de bordo (F05)\n5. Cauda com o logo (foto real já tratada)\n\n• Usar as fotos reais do PR-UUT que já foram tratadas (três quartos, cabine, frente e cauda). Nenhuma imagem de banco com outra aeronave.\n• Tela 4: se ainda não houver foto real do serviço de bordo, usar a cabine com a mesa posta e fotografar o catering na diária (cena F05).\nPendências: Os números da tela 3 (700 km/h e 3h30) não batem com o post de 26/10 (650 km/h e 2.100 km). Usar uma única fonte antes de publicar.",
     arquivos: []
   },
   {
@@ -297,6 +302,7 @@ window.PORTAL_POSTS = [
     direcionamento: "Sequência de 5 telas 9:16. Arte em alteração pela equipe de design.\nPendência: Confirmar o link do canal de empty legs.",
     copy: "1. O trecho que vira oportunidade: quando a aeronave precisa voltar ou mudar de base, o trecho fica disponível para você voar.\n2. Como funciona o canal: entre no canal de trechos disponíveis; receba as oportunidades com rota, data e horário; garanta o seu voo pelo WhatsApp.\n3. Como é um trecho (exemplo ilustrativo): UDI → GRU, 14 nov, 10h, até 4 passageiros, Phenom 100.\n4. Entre no canal: receba os próximos trechos assim que forem publicados. Toque no link abaixo.\n5. Tela final: \"Conecte o que importa.\" Fale com a equipe Naves pelo WhatsApp e planeje o seu próximo voo. Toque no link abaixo.",
     legenda: '', roteiro: '',
+    captacao: "Imagem de cada tela:\n1. PR-UUT na escada aberta (foto real já tratada)\n2. Fundo preto com 3 passos numerados\n3. Cartão de trecho em fundo preto, sem campo de valor\n4. Frente da aeronave (foto real já tratada) + adesivo de link\n5. Cauda com o logo\n\n• Sem captação nova: usar as fotos reais já tratadas do PR-UUT.\nPendências: Link do canal de trechos.",
     arquivos: []
   },
   {
@@ -315,6 +321,7 @@ window.PORTAL_POSTS = [
     direcionamento: "Sequência de 5 telas 9:16. Arte em alteração pela equipe de design.",
     copy: "1. Rotas a partir de Uberlândia e São Paulo: do interior ao litoral, para todo o Brasil e a América do Sul.\n2. Inhotim (Brumadinho, MG).\n3. Punta del Este (Uruguai).\n4. Litoral do Nordeste (Bahia, Alagoas, Pernambuco e outros estados).\n5. Tela final: \"Conecte o que importa.\" Fale com a equipe Naves pelo WhatsApp e planeje o seu próximo voo. Toque no link abaixo.",
     legenda: '', roteiro: '',
+    captacao: "Imagem de cada tela:\n1. F01 · PR-UUT de três quartos no fim de tarde\n2. Foto do destino: Inhotim\n3. Foto do destino: Punta del Este\n4. Foto do destino: litoral do Nordeste\n5. F03 · frente na linha central + adesivo de link\n\n• Telas 1 e 5: fotos F01 e F03 da diária, no tratamento de fim de tarde.\n• Telas 2 a 4: fotos dos destinos próprias ou com licença de uso, sem aeronaves de outras empresas. Inhotim exige autorização de uso de imagem das obras.\n• Os mesmos destinos e fotos do carrossel de 06/11, para as duas peças conversarem.\nPendências: Licença das fotos dos destinos.",
     arquivos: []
   },
   {
@@ -324,6 +331,7 @@ window.PORTAL_POSTS = [
     direcionamento: "Sequência de 5 telas 9:16. Arte em alteração pela equipe de design.",
     copy: "1. Preparo da aeronave: antes de cada voo, a aeronave é preparada com cuidado, por dentro e por fora.\n2. Checklist da tripulação: cada sistema conferido antes da partida.\n3. Embarque: do carro à escada da aeronave, sem filas.\n4. Pista livre: decolagem no horário da sua agenda.\n5. Tela final: \"Conecte o que importa.\" Fale com a equipe Naves pelo WhatsApp e planeje o seu próximo voo. Toque no link abaixo.",
     legenda: '', roteiro: '',
+    captacao: "Imagem de cada tela:\n1. Vídeo de 5s · H02 ou H03, preparo da aeronave\n2. Vídeo de 5s · I01 e I02, volta externa e mãos no painel\n3. Vídeo de 5s · E03 e E04, caminhada e subida da escada\n4. Vídeo de 5s · H05 ou F03, aeronave no pátio\n5. F02 · cauda com o logo + adesivo de link\n\n• Sem cena exclusiva: usar trechos de 5 segundos das cenas H, I e E da diária (as mesmas do Reel de 20/11, em takes diferentes).\n• Nunca filmar acionamento, táxi, decolagem ou pouso. A tela 4 mostra a aeronave parada no pátio.\n• Passageiro da tela 3 é alguém da equipe, de costas ou sem rosto.",
     arquivos: []
   },
   {
@@ -334,6 +342,7 @@ window.PORTAL_POSTS = [
     copy: "1. Amanhã, você conhece quem está no comando dos voos da Naves.\n2. Caixa de perguntas: \"O que você perguntaria ao nosso comandante?\"",
     roteiro: "",
     legenda: "",
+    captacao: "Imagem de cada tela:\n1. T05 · retrato do comandante ao lado da escada\n2. I02 · mãos no painel, com a caixa de perguntas por cima\n\n• Fotos T05 e frame de I02 da diária. Termo de uso de imagem do comandante assinado.\n• Para as respostas: o comandante grava de 3 a 5 respostas curtas (até 15 segundos cada), na vertical, no mesmo enquadramento do T02, até 18/11.\nPendências: Termo de uso de imagem do comandante.",
     arquivos: []
   },
   {
@@ -344,6 +353,7 @@ window.PORTAL_POSTS = [
     copy: "1. Feriado chegando. Para onde vai a sua rota?\n2. Enquete: \"Praia ou serra no feriado?\" Opções: Praia / Serra.",
     roteiro: "",
     legenda: "",
+    captacao: "Imagem de cada tela:\n1. F08 · PR-UUT ao pôr do sol\n2. F01 · PR-UUT de três quartos, com a enquete por cima\n\n• Fotos F08 e F01 da diária (fim de tarde). Sem imagens de banco com outras aeronaves.",
     arquivos: []
   },
   {
@@ -354,6 +364,7 @@ window.PORTAL_POSTS = [
     copy: "1. Amanhã: os trechos disponíveis de dezembro.\n2. Entre no canal e receba os trechos assim que forem publicados. Toque no link abaixo.\n3. Tela final: \"Conecte o que importa.\" Fale com a equipe Naves pelo WhatsApp e planeje o seu próximo voo. Toque no link abaixo.",
     roteiro: "",
     legenda: "",
+    captacao: "Imagem de cada tela:\n1. F02 · cauda com o logo\n2. Cartão de trecho em fundo preto + adesivo de link\n3. F03 · frente na linha central\n\n• Fotos F02 e F03 da diária. O cartão de trecho segue o modelo dos stories de Empty legs, sem campo de valor.\nPendências: Link do canal de trechos.",
     arquivos: []
   }
 ];

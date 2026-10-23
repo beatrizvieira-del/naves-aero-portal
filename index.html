@@ -332,6 +332,13 @@ textarea:focus { outline: none; border-color: var(--accent); }
 .close { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line-strong); background: var(--surface-2); font-size: 18px; flex: none; display: grid; place-items: center; }
 .day-switch { display: flex; gap: 6px; flex-wrap: wrap; }
 .downloads { display: flex; gap: 8px; flex-wrap: wrap; }
+.rot-list { display: grid; gap: 8px; }
+.rot-item { display: grid; grid-template-columns: 64px 1fr auto; gap: 12px; align-items: center; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-2); }
+.rot-item .d { font-weight: 800; font-size: 13px; }
+.rot-item .d small { display: block; font-weight: 600; font-size: 11px; color: var(--faint); text-transform: uppercase; letter-spacing: .08em; }
+.rot-item .t { font-weight: 700; font-size: 14px; text-align: left; background: none; border: 0; color: inherit; padding: 0; cursor: pointer; font-family: inherit; }
+.rot-item .t span { display: block; font-weight: 500; font-size: 12px; color: var(--muted); margin-top: 2px; }
+@media (max-width: 640px) { .rot-item { grid-template-columns: 52px 1fr; } .rot-item .btn { grid-column: 1 / -1; justify-self: start; } }
 .divider { height: 1px; background: var(--line); }
 .arte-box { border: 1px dashed color-mix(in srgb, var(--accent) 55%, transparent); background: var(--accent-soft); border-radius: 14px; padding: 14px; }
 .arte-help { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
@@ -883,7 +890,17 @@ function viewCalendar() {
     progressoMes(mp, count) +
     '<div class="grid7">' + cells + '</div>' +
     (mp.length ? '' : '<div class="empty-state">Nenhum post previsto para este mês.</div>') +
-    '</section>';
+    '</section>' + roteirosSection(mp);
+}
+function roteirosSection(mp) {
+  const its = mp.filter(temRoteiro);
+  if (!its.length) return '';
+  return '<section class="card section"><div class="section-head"><h2>Roteiros e captação · Reels e Stories</h2><div class="downloads">' +
+    (C.linkRoteiros ? '<a class="btn" href="' + esc(C.linkRoteiros) + '" target="_blank" rel="noopener">📄 Abrir no Google Docs</a>' : '') +
+    '<button class="btn" data-action="print-roteiros">⇩ Baixar todos em PDF</button></div></div>' +
+    '<div class="rot-list">' + its.map(p => '<div class="rot-item"><div class="d">' + ddmm(p.data) + '<small>' + WD[parseDate(p.data).wd] + '</small></div>' +
+      '<button class="t" data-action="open" data-id="' + esc(p.id) + '">' + esc(getField(p, 'tema')) + '<span>' + esc(p.formato) + (getField(p, 'captacao') ? ' · com direcionamento de captação' : '') + '</span></button>' +
+      '<button class="btn sm" data-action="print-roteiro" data-id="' + esc(p.id) + '">⇩ PDF</button></div>').join('') + '</div></section>';
 }
 
 function viewPauta() {
@@ -917,7 +934,8 @@ function pautaItem(p) {
       fieldBox(p, 'tema', 'Tema', { rows: 1 }) +
       fieldBox(p, 'objetivo', 'Objetivo', { rows: 2 }) +
       fieldBox(p, 'direcionamento', 'Direcionamento visual (briefing)', { rows: 3 }) +
-      (isVid ? fieldBox(p, 'roteiro', 'Roteiro', { rows: 5 }) : fieldBox(p, 'copy', 'Copy do criativo', { rows: 4 })) +
+      (isVid ? fieldBox(p, 'roteiro', 'Roteiro', { rows: 5 }) : fieldBox(p, 'copy', catOf(p) === 'stories' ? 'Roteiro das telas' : 'Copy do criativo', { rows: 4 })) +
+      (temRoteiro(p) ? fieldBox(p, 'captacao', 'Direcionamento de captação', { rows: 4 }) : '') +
       fieldBox(p, 'legenda', 'Legenda', { rows: 5, count: true }) +
       '<div class="field"><div class="field-label">Status da pauta</div>' + statusButtons('pp-' + p.id, stPauta(p)) + '</div>' +
       commentsBlock('pp-' + p.id) +
@@ -940,7 +958,7 @@ function viewBoard(cat) {
   }).join('');
   return demoBanner() + hero(c.l, texts[cat]) +
     '<section class="card section"><div class="section-head"><h2>' + MONTHS[ui.month.m] + ' ' + ui.month.y + ' · ' + mp.length + ' posts</h2>' +
-    (cat === 'videos' ? '<button class="btn" data-action="print-roteiros">🖨 Baixar roteiros do mês em PDF</button>' : '') + '</div>' +
+    (cat === 'videos' || cat === 'stories' ? '<button class="btn" data-action="print-roteiros">⇩ Baixar roteiros e captação em PDF</button>' : '') + '</div>' +
     '<div class="board">' + cols + '</div></section>';
 }
 function postCard(p) {
@@ -1001,7 +1019,9 @@ function renderModal() {
     '<div class="divider"></div>' +
     fieldBox(p, 'objetivo', 'Objetivo', { readonly: true }) +
     fieldBox(p, 'direcionamento', 'Direcionamento visual (briefing)', { rows: 3 }) +
-    (isVid ? fieldBox(p, 'roteiro', 'Roteiro', { rows: 6 }) : fieldBox(p, 'copy', 'Copy do criativo', { rows: 3 })) +
+    (isVid ? fieldBox(p, 'roteiro', 'Roteiro', { rows: 6 }) : fieldBox(p, 'copy', cat === 'stories' ? 'Roteiro das telas' : 'Copy do criativo', { rows: 3 })) +
+    (temRoteiro(p) ? fieldBox(p, 'captacao', 'Direcionamento de captação', { rows: 4 }) +
+      '<div class="downloads"><button class="btn sm" data-action="print-roteiro" data-id="' + esc(p.id) + '">⇩ Baixar roteiro e captação (PDF)</button></div>' : '') +
     fieldBox(p, 'legenda', 'Legenda', { rows: 6, count: true }) +
     commentsBlock(p.id) +
     '</div>';
@@ -1014,12 +1034,20 @@ function printDoc(title, items) {
   pr.innerHTML = '<h1>' + esc(title) + '</h1><div class="sub">' + esc(C.cliente) + ' · ' + MONTHS[ui.month.m] + ' ' + ui.month.y + '</div>' + items.join('');
   window.print();
 }
+const temRoteiro = p => catOf(p) === 'videos' || catOf(p) === 'stories';
+function roteiroItem(p) {
+  const isVid = catOf(p) === 'videos';
+  return '<div class="item"><h3>' + esc(getField(p, 'tema')) + '</h3><div class="meta">' + fullDate(p.data) + ' · ' + esc(p.formato) + '</div>' +
+    printSec('Objetivo', getField(p, 'objetivo')) + printSec('Direcionamento visual', getField(p, 'direcionamento')) +
+    printSec(isVid ? 'Roteiro' : 'Roteiro das telas', getField(p, isVid ? 'roteiro' : 'copy')) +
+    printSec('Direcionamento de captação', getField(p, 'captacao')) + printSec('Legenda', getField(p, 'legenda')) + '</div>';
+}
+function printRoteiro(id) { const p = postById(id); if (p) printDoc('Roteiro e captação', [roteiroItem(p)]); }
 function printSec(label, text) { return text ? '<h4>' + esc(label) + '</h4><p>' + esc(text) + '</p>' : ''; }
 function printRoteiros() {
-  const vids = postsOfMonth().filter(p => catOf(p) === 'videos');
-  if (!vids.length) return toast('Nenhum vídeo neste mês.');
-  printDoc('Roteiros do mês', vids.map(p => '<div class="item"><h3>' + esc(getField(p, 'tema')) + '</h3><div class="meta">' + fullDate(p.data) + ' · ' + esc(p.formato) + '</div>' +
-    printSec('Objetivo', getField(p, 'objetivo')) + printSec('Direcionamento', getField(p, 'direcionamento')) + printSec('Roteiro', getField(p, 'roteiro')) + printSec('Legenda', getField(p, 'legenda')) + '</div>'));
+  const its = postsOfMonth().filter(temRoteiro);
+  if (!its.length) return toast('Nenhum roteiro de Reels ou Stories neste mês.');
+  printDoc('Roteiros e captação do mês · Reels e Stories', its.map(roteiroItem));
 }
 function printPauta() {
   const mp = postsOfMonth();
@@ -1155,6 +1183,7 @@ document.addEventListener('click', async e => {
     const box = el.closest('.comment'); el.disabled = true;
     if (await deleteComment(box.dataset.ckey, box.dataset.cid)) { toast('Comentário apagado'); refreshAfterComment(); } else el.disabled = false;
   } else if (a === 'print-roteiros') printRoteiros();
+  else if (a === 'print-roteiro') printRoteiro(el.dataset.id);
   else if (a === 'print-pauta') printPauta();
 });
 function refreshAfterComment() {

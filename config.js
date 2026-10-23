@@ -23,6 +23,9 @@ window.PORTAL_CONFIG = {
   // Esse link mostra o campo "Arte do post". Troque o código se o link vazar.
   codigoDesigner: '630a4239',
 
+  // Link do documento de roteiros e captação de Reels e Stories (botão no calendário). Opcional.
+  linkRoteiros: 'https://docs.google.com/document/d/1I5TCFeLY98LRHXXym3sfuQ9_RmYbizVvW7AHag6FLpE/edit',
+
   // Link da pré-pauta no Google Docs (botão "Abrir pré-pauta"). Opcional.
   linkPrePauta: 'https://docs.google.com/document/d/1Fr1o2c7iTSLImYBPpNqvyn5k18Bxp-mRgX-BjMx5eL8/edit'
 };
