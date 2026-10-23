@@ -278,6 +278,11 @@ textarea:focus { outline: none; border-color: var(--accent); }
 .c-edit textarea { min-height: 64px; }
 .aprovador-tag { font-size: 12.5px; color: var(--muted); background: color-mix(in srgb, var(--st-aprovado) 12%, var(--surface)); border: 1px solid color-mix(in srgb, var(--st-aprovado) 35%, transparent); border-radius: 10px; padding: 8px 12px; }
 .aprovador-tag b { color: var(--text); }
+.aprov-confirm { border: 1px solid color-mix(in srgb, var(--st-aprovado) 50%, transparent); background: color-mix(in srgb, var(--st-aprovado) 10%, var(--surface)); border-radius: 12px; padding: 12px 14px; display: grid; gap: 8px; font-size: 13.5px; }
+.aprov-confirm p { margin: 0; color: var(--muted); }
+.aprov-confirm strong { color: var(--text); }
+.aprov-pill { display: inline-flex; align-items: center; gap: 5px; font-weight: 800; color: var(--st-aprovado); letter-spacing: .04em; }
+.aprov-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .no-comments { font-size: 13px; color: var(--faint); }
 .comment-form { display: grid; gap: 8px; }
 .comment-form input { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; font-size: 13.5px; }
@@ -680,6 +685,17 @@ async function carregarAprovador() {
 function ehAprovacao(texto) {
   const t = texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   return /\baprovad[oa]s?\b/.test(t) && !/\bnao\s+(esta\s+|foi\s+|ficou\s+)?aprovad/.test(t);
+}
+function mostrarConfirmacaoAprovacao(form) {
+  if (form.querySelector('.aprov-confirm')) return;
+  const key = form.dataset.cform; const p = postOfKey(key);
+  const tipo = key.startsWith('pp-') ? 'da pauta' : 'do criativo';
+  const box = document.createElement('div'); box.className = 'aprov-confirm'; box.setAttribute('role', 'alertdialog');
+  box.innerHTML = '<b>Confirmar aprovação?</b><p>Este comentário vai mudar o status ' + tipo + ' <strong>' + esc(p ? getField(p, 'tema') : '') + '</strong> para <span class="aprov-pill">' + dot('aprovado') + 'APROVADO</span> e avisar a equipe no Google Chat.</p>' +
+    '<div class="aprov-actions"><button class="btn primary sm" data-action="aprov-sim">Sim, aprovar e enviar</button><button class="btn sm" data-action="aprov-nao">Só comentar, sem aprovar</button><button class="link-btn" data-action="aprov-cancel">Cancelar</button></div>';
+  form.querySelector('[data-action="comment"]').disabled = true;
+  form.querySelector('.field-actions').before(box);
+  box.querySelector('[data-action="aprov-sim"]').focus();
 }
 async function tentarAprovar(key, comentario) {
   if (DEMO || !APROVADOR_NOME || !ehAprovacao(comentario.texto)) return false;
@@ -1102,15 +1118,26 @@ document.addEventListener('click', async e => {
     const autor = form.querySelector('[data-cname]').value.trim();
     if (!texto) { form.querySelector('[data-ctext]').focus(); return; }
     if (autor) lsSet('naves-nome', autor);
+    // aprovador escreveu "aprovado": pede confirmação antes de mudar o status
+    const decisao = form.dataset.decisao || '';
+    if (APROVADOR_NOME && !DEMO && ehAprovacao(texto) && !decisao) { mostrarConfirmacaoAprovacao(form); return; }
+    delete form.dataset.decisao;
     el.disabled = true;
     await addComment(form.dataset.cform, autor, texto);
-    const aprovou = await tentarAprovar(form.dataset.cform, { autor, texto });
-    if (!aprovou) aposComentar(form.dataset.cform, { autor, texto });
-    toast('Comentário enviado');
+    const aprovou = decisao === 'aprovar' ? await tentarAprovar(form.dataset.cform, { autor, texto }) : false;
+    if (!aprovou) { aposComentar(form.dataset.cform, { autor, texto }); toast('Comentário enviado'); }
     if (ui.modalPost) {
       const keep = hasDirty($('#sheet'));
       if (!keep) { renderModal(); } else { form.querySelector('[data-ctext]').value = ''; el.disabled = false; }
     } else rerenderKeepOpen();
+  } else if (a === 'aprov-sim' || a === 'aprov-nao') {
+    const form = el.closest('[data-cform]');
+    form.dataset.decisao = a === 'aprov-sim' ? 'aprovar' : 'comentar';
+    form.querySelector('.aprov-confirm').remove();
+    const send = form.querySelector('[data-action="comment"]'); send.disabled = false; send.click();
+  } else if (a === 'aprov-cancel') {
+    const box = el.closest('.aprov-confirm'); const form = el.closest('[data-cform]');
+    box.remove(); form.querySelector('[data-action="comment"]').disabled = false; form.querySelector('[data-ctext]').focus();
   } else if (a === 'c-edit') {
     const box = el.closest('.comment'); const c = findComment(box.dataset.ckey, box.dataset.cid); if (!c) return;
     box.querySelector('p').outerHTML = '<div class="c-edit"><textarea rows="3">' + esc(c.texto) + '</textarea><div class="field-actions"><button class="btn sm" data-action="c-cancel">Cancelar</button><button class="btn primary sm" data-action="c-save">Salvar</button></div></div>';
